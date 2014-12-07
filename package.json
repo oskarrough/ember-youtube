@@ -1,6 +1,6 @@
 {
   "name": "ember-youtube",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "directories": {
     "doc": "doc",
     "test": "tests"
@@ -10,7 +10,7 @@
     "build": "ember build",
     "test": "ember test"
   },
-  "repository": "",
+  "repository": "https://github.com/oskarrough/ember-youtube",
   "engines": {
     "node": ">= 0.10.0"
   },
@@ -33,9 +33,15 @@
   },
   "description": "The default blueprint for ember-cli addons.",
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "youtube",
+    "video",
+    "player"
   ],
   "ember-addon": {
     "configPath": "tests/dummy/config"
+  },
+  "dependencies": {
+    "ember-component-inbound-actions": "0.0.2"
   }
 }

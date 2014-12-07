@@ -1,0 +1,17 @@
+<h2>controllers/index</h2>
+{{input value=youTubeId}}
+
+<p>You can control the component directly from the controller.</p>
+<menu>
+	<button {{action "togglePlay" target="player"}}>{{#if player.isPlaying}}Pause{{else}}Play{{/if}}</button>
+	<button {{action "toggleVolume" target="player"}}>{{#if player.isMuted}}Unmute{{else}}Mute{{/if}}</button>
+</menu>
+
+<h2>components/ember-youtube</h2>
+{{ember-youtube ytid=youTubeId name=player playing="ytPlaying" paused="ytPaused" ended="ytEnded"}}
+
+{{!-- ready="ytReady"
+buffering="ytBuffering"
+queued="ytQueued" --}}
+
+{{!-- {{ember-youtube ytid="TTSUcfKmSl8"}} --}}

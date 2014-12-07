@@ -1,0 +1,20 @@
+<p>Or inside the component.</p>
+<menu>
+	{{!-- <button {{action 'load'}}>Load video</button>
+	<button {{action 'play'}}>Play</button>
+	<button {{action 'pause'}}>Pause</button> --}}
+	<button {{action 'togglePlay'}}>{{#if isPlaying}}Pause{{else}}Play{{/if}}</button>
+	<button {{action 'toggleVolume'}}>{{#if isMuted}}Unmute{{else}}Mute{{/if}}</button>
+</menu>
+
+<p>{{currentTimeFormatted}}/{{durationFormatted}}</p>
+<p><progress {{bind-attr value=currentTime max=duration}}></progress></p>
+
+<div id="ember-youtube-player"></div>
+
+<p><code>
+	id: {{ytid}}<br>
+	state: {{playerState}}<br>
+	isMuted: {{isMuted}}<br>
+	isPlaying: {{isPlaying}}<br>
+</code></p>
