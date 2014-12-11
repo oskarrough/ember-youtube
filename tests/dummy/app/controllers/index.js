@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
-	youTubeId: 'fZ7MhTRmJ60',
+	youTubeId: 'fZ7MhTRmJ60', // NEFrNP-BLcI
 
 	actions: {
 		ytPlaying: function() {
