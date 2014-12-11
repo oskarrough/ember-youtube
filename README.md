@@ -1,11 +1,23 @@
 # ember-youtube
 
-A simple component to load, play and control YouTube videos using the iframe API. It has full support for all YouTube events, a custom progress bar and allows you to have syncronized controls in and outside the component.
+A simple component to load, play and control YouTube videos using the iframe API.
+
+## Features
+
+- Full support for all YouTube player events
+- Custom progress bar
+- Synchronized controls
+- Encapsulated
+- Error handling
+
+## Work in progress
+
+This is very much a work in progress. Playback, custom controls and progress bar are working but the API isn't polished and this is my first addon. Please file an issue if you have any feedback.
 
 ## Usage
 
 Load a video
-`{{ember-youtube ytid=TTSUcfKmSl8 name=player}}`
+`{{ember-youtube ytid=fZ7MhTRmJ60}}`
 
 ## Installation
 

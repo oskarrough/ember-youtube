@@ -30,7 +30,7 @@
     "express": "^4.8.5",
     "glob": "^4.0.5"
   },
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "An Ember.js component for controlling YouTube videos using the iframe api",
   "keywords": [
     "ember-addon",
     "youtube",
