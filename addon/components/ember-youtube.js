@@ -2,12 +2,12 @@
 import Ember from 'ember';
 import InboundActions from 'ember-component-inbound-actions/inbound-actions';
 
-export default Ember.Component.extend(Ember.Evented, /*InboundActions, */{
-
+export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 	ytid: null,
 	player: null,
 	playerState: 'loading',
 	isMuted: false,
+	debug: false,
 
 	// progressBar: function() {
 	// 	var player = this.get('player');
@@ -130,18 +130,18 @@ export default Ember.Component.extend(Ember.Evented, /*InboundActions, */{
 
 		// internal events using .on('event') syntax
 		// isn't available outside the component
-		this.trigger(state);
+		// this.trigger(state);
 	},
 
 	// called by the API
 	onPlayerError: function(event) {
-		Ember.warn('YT error');
+		var errorCode = event.data;
 		this.set('playerState', 'error');
-		console.log(event.data);
 
-		// TODO: go to next video on error
+		// Send the event to the controller
+		this.sendAction('error', errorCode);
 
-		// switch(event.data) {
+		// switch(errorCode) {
 		// 	case 2:
 		// 		Ember.warn('Invalid parameter');
 		// 		break;
@@ -171,11 +171,11 @@ export default Ember.Component.extend(Ember.Evented, /*InboundActions, */{
 		}.bind(this), 60);
 
 		this.set('timer', timer);
-	}.on('playing'),
+	},
 
 	stopTimer: function() {
 		window.clearInterval(this.get('timer'));
-	}.on('paused'),
+	},
 
 	currentTimeFormatted: function() {
 		var time = this.get('currentTime');
@@ -202,6 +202,7 @@ export default Ember.Component.extend(Ember.Evented, /*InboundActions, */{
 	actions: {
 		playing: function() {
 			Ember.debug('on playing from component');
+			this.startTimer();
 		},
 		load: function() {
 			this.get('player').loadVideo();
@@ -211,6 +212,7 @@ export default Ember.Component.extend(Ember.Evented, /*InboundActions, */{
 		},
 		pause: function() {
 			this.get('player').pauseVideo();
+			this.stopTimer();
 		},
 		togglePlay: function() {
 			if (this.get('isPlaying')) {
