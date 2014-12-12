@@ -13,6 +13,9 @@ export default Ember.Controller.extend({
 		ytEnded: function() {
 			Ember.debug('on ended from controller');
 			// here you could load another video by changing the youTubeId
+		},
+		ytBuffering: function() {
+			Ember.debug('on buffering from controller');
 		}
 	}
 });

@@ -59,14 +59,15 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 		this.set('name', this);
 	}.on('init'),
 
-	// Load the iframe player API asynchronously from YouTube
 	loadApi: function() {
+
+		// Load the iframe player API asynchronously from YouTube
 		var tag = document.createElement('script');
 		tag.src = "https://www.youtube.com/iframe_api";
 		var firstTag = document.getElementsByTagName('script')[0];
 		firstTag.parentNode.insertBefore(tag, firstTag);
 
-		// Youtube callback when API is ready
+		// YouTube callback when API is ready
 		window.onYouTubePlayerAPIReady = function() {
 			Ember.debug('yt player api ready');
 			this.createPlayer();
@@ -75,12 +76,10 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 
 	createPlayer: function() {
 		var _this = this;
-		var videoId = this.get('ytid');
 		var playerVars = this.get('playerVars');
 		var $iframe = this.$('#EmberYoutube-player');
 
 		var player = new YT.Player($iframe[0], {
-			// videoId: 'g8MN92gCCjw',
 			width: 360,
 			height: 270,
 			playerVars: playerVars,
@@ -95,32 +94,27 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 	},
 
 	loadVideo: function() {
-		this.get('player').loadVideoById(this.get('ytid'));
+		var id = this.get('ytid');
+		if (!id) { return; }
+
+		this.get('player').loadVideoById(id);
 	}.observes('ytid'),
 
 	onPlaybackChange: function() {
-		if (this.get('playback')) {
-			this.send('play');
-		} else {
-			this.send('pause');
-		}
+		this.get('playback') ? this.send('play') : this.send('pause');
 	}.observes('playbackChange'),
 
 	onVolumeChange: function() {
-		if (this.get('volume')) {
-			this.send('play');
-		} else {
-			this.send('pause');
-		}
+		this.get('volume') ? this.send('play') : this.send('pause');
 	}.observes('volumeChange'),
 
-	// called by the API
+	// called by YouTube
 	onPlayerReady: function() {
 		this.set('playerState', 'ready');
 		this.loadVideo();
 	},
 
-	// called by the API
+	// called by YouTube
 	onPlayerStateChange: function(event) {
 		// Get a readable state name
 		var state = this.get('stateNames.' + event.data.toString());
@@ -143,6 +137,8 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 	onPlayerError: function(event) {
 		var errorCode = event.data;
 		this.set('playerState', 'error');
+
+		Ember.debug('error' + errorCode);
 
 		// Send the event to the controller
 		this.sendAction('error', errorCode);
@@ -212,6 +208,8 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 		load: function() {
 			this.get('player').loadVideo();
 		},
+
+		// playback
 		play: function() {
 			this.get('player').playVideo();
 		},
@@ -226,13 +224,21 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 				this.send('play');
 			}
 		},
+
+		// volume
+		mute: function() {
+			this.get('player').mute();
+		},
+		unMute: function() {
+			this.get('player').unMute();
+		},
 		toggleVolume: function() {
 			var player = this.get('player');
 			this.toggleProperty('isMuted');
 			if (player.isMuted()) {
-				player.unMute();
+				this.send('unMute');
 			} else {
-				player.mute();
+				this.send('mute');
 			}
 		}
 	}
