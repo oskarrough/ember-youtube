@@ -3,11 +3,16 @@ import Ember from 'ember';
 import InboundActions from 'ember-component-inbound-actions/inbound-actions';
 
 export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
+	classNames: ['EmberYoutube'],
 	ytid: null,
 	player: null,
 	playerState: 'loading',
 	isMuted: false,
-	debug: false,
+
+	showControls: false,
+	showTime: false,
+	showProgress: false,
+	showDebug: false,
 
 	// progressBar: function() {
 	// 	var player = this.get('player');
@@ -72,7 +77,8 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 		var _this = this;
 		var videoId = this.get('ytid');
 		var playerVars = this.get('playerVars');
-		var $iframe = this.$('#ember-youtube-player');
+		var $iframe = this.$('#EmberYoutube-player');
+
 		var player = new YT.Player($iframe[0], {
 			// videoId: 'g8MN92gCCjw',
 			width: 360,

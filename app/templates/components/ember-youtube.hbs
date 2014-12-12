@@ -1,18 +1,27 @@
-<div id="ember-youtube-player"></div>
+<div id="EmberYoutube-player"></div>
 
-{{#if debug}}
-	<p>Or inside the component.</p>
+{{#if showControls}}
+<menu class="EmberYoutube-controls">
+	<button {{action 'togglePlay'}}>{{#if isPlaying}}Pause{{else}}Play{{/if}}</button>
+	<button {{action 'toggleVolume'}}>{{#if isMuted}}Unmute{{else}}Mute{{/if}}</button>
+</menu>
+{{/if}}
 
-	<menu>
-		<button {{action 'togglePlay'}}>{{#if isPlaying}}Pause{{else}}Play{{/if}}</button>
-		<button {{action 'toggleVolume'}}>{{#if isMuted}}Unmute{{else}}Mute{{/if}}</button>
-	</menu>
+{{#if showTime}}
+	<p class="EmberYoutube-time">
+		{{currentTimeFormatted}}/{{durationFormatted}}
+	</p>
+{{/if}}
 
-	<p>{{currentTimeFormatted}}/{{durationFormatted}}</p>
-	<p><progress {{bind-attr value=currentTime max=duration}}></progress></p>
+{{#if showProgress}}
+	<p class="EmberYoutube-progress">
+		<progress {{bind-attr value=currentTime max=duration}}></progress>
+	</p>
+{{/if}}
 
-	<p><code>
-		id: {{ytid}}<br>
+{{#if showDebug}}
+	<p class="EmberYoutube-debug"><code>
+		ytid: {{ytid}}<br>
 		state: {{playerState}}<br>
 		isMuted: {{isMuted}}<br>
 		isPlaying: {{isPlaying}}<br>

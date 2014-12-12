@@ -1,17 +1,22 @@
-<h2>controllers/index</h2>
-{{input value=youTubeId}}
+<p>You can control the component directly from the controller by target the component in your actions. Try changing the YouTube ID or tap the buttons below.</p>
 
-<p>You can control the component directly from the controller.</p>
+<p>{{input value=youTubeId}}</p>
 <menu>
-	<button {{action "togglePlay" target="player"}}>{{#if player.isPlaying}}Pause{{else}}Play{{/if}}</button>
-	<button {{action "toggleVolume" target="player"}}>{{#if player.isMuted}}Unmute{{else}}Mute{{/if}}</button>
+	<button {{action "togglePlay" target="myPlayer"}}>
+		{{#if myPlayer.isPlaying}}Pause{{else}}Play{{/if}}
+	</button>
+	<button {{action "toggleVolume" target="myPlayer"}}>
+		{{#if myPlayer.isMuted}}Unmute{{else}}Mute{{/if}}
+	</button>
 </menu>
 
 <h2>components/ember-youtube</h2>
-{{ember-youtube ytid=youTubeId debug=true name=player playing="ytPlaying" paused="ytPaused" ended="ytEnded"}}
-
-{{!-- ready="ytReady"
-buffering="ytBuffering"
-queued="ytQueued" --}}
-
-{{!-- {{ember-youtube ytid="TTSUcfKmSl8"}} --}}
+{{ember-youtube ytid=youTubeId
+	name=myPlayer
+	debug=false
+	showControls=true
+	showTime=true
+	showProgress=true
+	playing="ytPlaying"
+	paused="ytPaused"
+	ended="ytEnded"}}
