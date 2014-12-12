@@ -1,25 +1,79 @@
 # ember-youtube
 
-A simple component to load, play and control YouTube videos using the iframe API.
+A simple Ember.js component to play and control single YouTube videos using the iframe API. It will autoplay as soon as you pass a YouTube ID.
+
+```hbs
+{{ember-youtube video="fZ7MhTRmJ60"
+	name=player
+
+	showControls=false
+	showTime=false
+	showProgress=false
+	showDebug=false
+
+	playing="ytPlaying"
+	paused="ytPaused"
+	ended="ytEnded"
+	buffering="ytBuffering"}}
+```
 
 ## Features
 
 - Full support for all YouTube player events
-- Custom progress bar
-- Synchronized controls
-- Encapsulated
+- External controls (make your own buttons!)
+- Custom time (4:31/7:58)
+- Custom progress bar (just for show, for now)
 - Error handling
-
-## Work in progress
-
-This is very much a work in progress. Playback, custom controls and progress bar are working but the API isn't polished and this is my first addon. Please file an issue if you have any feedback.
 
 ## Usage
 
-Load a video
-`{{ember-youtube ytid=fZ7MhTRmJ60}}`
+Inside your ember-cli project do:
 
-## Installation
+`npm install --save-dev ember-youtube`
+
+Files will be included automatically by ember-cli and you can do this:
+
+```hbs
+{{ember-youtube video=youTubeId}}
+```
+
+## Work in progress
+
+This is very much a work in progress and my first ember addon. Please file an issue if you have any feedback or would like to contribute.
+
+## External controls
+
+If you want your own buttons, you need to do two things:
+
+1) Give the ember-youtube component a `name`.
+This exposes the component and gives you a target for your actions.
+
+```hbs
+{{ember-youtube video=youTubeId name=myPlayer}}
+```
+
+2) Specify a target on your actions
+Because we gave it a name, you actually have complete access to the insides of the component. Be careful.
+
+```hbs
+<button {{action "togglePlay" target="myPlayer"}}>
+	{{#if myPlayer.isPlaying}}Pause{{else}}Play{{/if}}
+</button>
+<button {{action "toggleVolume" target="myPlayer"}}>
+	{{#if myPlayer.isMuted}}Unmute{{else}}Mute{{/if}}
+</button>
+```
+
+You can also do this:
+
+```hbs
+<button {{action "play" target="myPlayer"}}>Play</button>
+<button {{action "pause" target="myPlayer"}}>Pause</button>
+<button {{action "mute" target="myPlayer"}}>Mute</button>
+<button {{action "unMute" target="myPlayer"}}>Unmute</button>
+```
+
+## Development
 
 * `git clone` this repository
 * `npm install`
@@ -50,6 +104,7 @@ For more information on using ember-cli, visit [http://www.ember-cli.com/](http:
 
 ## YouTube links
 
+* https://www.npmjs.com/package/react-youtube
 * https://github.com/mikecrittenden/tangletube
 * https://github.com/4South/ember-youtube/blob/master/public/js/views/YoutubeView.js
 * http://alg.github.io/talks/emberjs/#/title
