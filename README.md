@@ -73,6 +73,36 @@ You can also do this:
 <button {{action "unMute" target="myPlayer"}}>Unmute</button>
 ```
 
+## Events
+
+The component send four different events: `playing`, `paused`, `ended` and `buffering`. You can bind them to actions in your controller. Like this:
+
+```hbs
+{{ember-youtube video="fZ7MhTRmJ60"
+	playing="ytPlaying"
+	paused="ytPaused"
+	ended="ytEnded"
+	buffering="ytBuffering"}}
+```
+
+```JavaScript
+actions: {
+  ytPlaying: function() {
+    Ember.debug('on playing from controller');
+  },
+  ytPaused: function() {
+    Ember.debug('on paused from controller');
+  },
+  ytEnded: function() {
+    Ember.debug('on ended from controller');
+    // here you could load another video by changing the youTubeId
+  },
+  ytBuffering: function() {
+    Ember.debug('on buffering from controller');
+  }
+}
+```
+
 ## Development
 
 * `git clone` this repository
