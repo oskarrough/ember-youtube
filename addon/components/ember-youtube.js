@@ -185,17 +185,16 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 
 	currentTimeFormatted: function() {
 		var time = this.get('currentTime');
+		if (!time) { return; }
 		var minutes = Math.floor(time / 60);
 		var seconds = Math.floor(time - minutes * 60);
-
-		if (seconds < 10) seconds = '0' + seconds;
-
+		if (seconds < 10) { seconds = '0' + seconds; }
 		return minutes + ':' + seconds;
-
 	}.property('currentTime'),
 
 	durationFormatted: function() {
 		var time = this.get('duration');
+		if (!time) { return; }
 		var minutes = Math.floor(time / 60);
 		var seconds = time - minutes * 60;
 		return minutes + ':' + seconds;
