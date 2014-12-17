@@ -3,7 +3,7 @@
 A simple Ember.js component to play and control single YouTube videos using the iframe API. It will autoplay as soon as you pass a YouTube ID.
 
 ```hbs
-{{ember-youtube video="fZ7MhTRmJ60"
+{{ember-youtube ytid="fZ7MhTRmJ60"
 	name=player
 
 	showControls=false
@@ -34,7 +34,7 @@ Inside your ember-cli project do:
 Files will be included automatically by ember-cli and you can do this:
 
 ```hbs
-{{ember-youtube video=youTubeId}}
+{{ember-youtube ytid=youTubeId}}
 ```
 
 ## Work in progress
@@ -49,7 +49,7 @@ If you want your own buttons, you need to do two things:
 This exposes the component and gives you a target for your actions.
 
 ```hbs
-{{ember-youtube video=youTubeId name=myPlayer}}
+{{ember-youtube ytid=youTubeId name=myPlayer}}
 ```
 
 2) Specify a target on your actions
@@ -78,7 +78,7 @@ You can also do this:
 The component send four different events: `playing`, `paused`, `ended` and `buffering`. You can bind them to actions in your controller. Like this:
 
 ```hbs
-{{ember-youtube video="fZ7MhTRmJ60"
+{{ember-youtube ytid="fZ7MhTRmJ60"
 	playing="ytPlaying"
 	paused="ytPaused"
 	ended="ytEnded"
