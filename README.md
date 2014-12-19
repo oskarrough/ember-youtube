@@ -37,9 +37,7 @@ Files will be included automatically by ember-cli and you can do this:
 {{ember-youtube ytid=youTubeId}}
 ```
 
-## Work in progress
-
-This is very much a work in progress and my first ember addon. Please file an issue if you have any feedback or would like to contribute.
+**This is very much a work in progress and my first ember addon. Please file an issue if you have any feedback or would like to contribute.**
 
 ## External controls
 

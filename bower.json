@@ -1,5 +1,9 @@
 {
   "name": "ember-youtube",
+  "authors": [
+    "Oskar Rough <oskar@rough.dk>"
+  ],
+  "license": "MIT",
   "dependencies": {
     "handlebars": "~1.3.0",
     "jquery": "^1.11.1",
