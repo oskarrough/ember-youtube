@@ -69,7 +69,7 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 
 		// YouTube callback when API is ready
 		window.onYouTubePlayerAPIReady = function() {
-			Ember.debug('yt player api ready');
+			// Ember.debug('yt player api ready');
 			this.createPlayer();
 		}.bind(this);
 	}.on('init'),
@@ -101,11 +101,19 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 	}.observes('ytid'),
 
 	onPlaybackChange: function() {
-		this.get('playback') ? this.send('play') : this.send('pause');
+		if (this.get('playback')) {
+			this.send('play');
+		} else {
+			this.send('pause');
+		}
 	}.observes('playbackChange'),
 
 	onVolumeChange: function() {
-		this.get('volume') ? this.send('play') : this.send('pause');
+		if (this.get('volume')) {
+			this.send('play');
+		} else {
+			this.send('pause');
+		}
 	}.observes('volumeChange'),
 
 	// called by YouTube
@@ -120,7 +128,7 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 		var state = this.get('stateNames.' + event.data.toString());
 		this.set('playerState', state);
 
-		Ember.debug(state);
+		// Ember.debug(state);
 
 		// send actions outside
 		this.sendAction(state);
@@ -138,7 +146,7 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 		var errorCode = event.data;
 		this.set('playerState', 'error');
 
-		Ember.debug('error' + errorCode);
+		Ember.warn('error' + errorCode);
 
 		// Send the event to the controller
 		this.sendAction('error', errorCode);
@@ -201,36 +209,17 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 	// }.property('duration'),
 
 	actions: {
-		playing: function() {
-			Ember.debug('on playing from component');
-			this.startTimer();
-		},
-		load: function() {
-			this.get('player').loadVideo();
-		},
-
-		// playback
-		play: function() {
-			this.get('player').playVideo();
-		},
-		pause: function() {
-			this.get('player').pauseVideo();
-			this.stopTimer();
-		},
+		load: function() { this.get('player').loadVideo(); },
+		play: function() { this.get('player').playVideo(); },
+		pause: function() { this.get('player').pauseVideo(); },
+		mute: function() { this.get('player').mute(); },
+		unMute: function() { this.get('player').unMute(); },
 		togglePlay: function() {
 			if (this.get('isPlaying')) {
 				this.send('pause');
 			} else {
 				this.send('play');
 			}
-		},
-
-		// volume
-		mute: function() {
-			this.get('player').mute();
-		},
-		unMute: function() {
-			this.get('player').unMute();
 		},
 		toggleVolume: function() {
 			var player = this.get('player');
@@ -240,6 +229,21 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 			} else {
 				this.send('mute');
 			}
-		}
+		},
+
+		// youtube events
+		ready: function() {
+			Ember.debug('HEJ OSKAR');
+		},
+		ended: function() {},
+		playing: function() {
+			this.startTimer();
+		},
+		paused: function() {
+			this.stopTimer();
+		},
+		buffering: function() {},
+		queued: function() {},
+
 	}
 });
