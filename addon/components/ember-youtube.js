@@ -204,10 +204,6 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 		return minutes + ':' + seconds;
 	}.property('duration'),
 
-	// durationFormatted: function() {
-	// 	return
-	// }.property('duration'),
-
 	actions: {
 		load: function() { this.get('player').loadVideo(); },
 		play: function() { this.get('player').playVideo(); },
@@ -232,9 +228,7 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 		},
 
 		// youtube events
-		ready: function() {
-			Ember.debug('HEJ OSKAR');
-		},
+		ready: function() {},
 		ended: function() {},
 		playing: function() {
 			this.startTimer();
@@ -244,6 +238,5 @@ export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
 		},
 		buffering: function() {},
 		queued: function() {},
-
 	}
 });
