@@ -1,8 +1,7 @@
 /*global YT*/
 import Ember from 'ember';
-import InboundActions from 'ember-component-inbound-actions/inbound-actions';
 
-export default Ember.Component.extend(/*Ember.Evented,*/ /*InboundActions, */{
+export default Ember.Component.extend(/*Ember.Evented, */{
 	classNames: ['EmberYoutube'],
 	ytid: null,
 	player: null,
