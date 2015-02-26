@@ -186,6 +186,19 @@ export default Ember.Component.extend(/*Ember.Evented, */{
 		window.clearInterval(this.get('timer'));
 	},
 
+	// avoids 'undefined' value for the <progress> element
+	currentTimeValue: function() {
+		var value = this.get('currentTime');
+		return value ? value : 0;
+	}.property('currentTime'),
+
+	// avoids 'undefined' value for the <progress> element
+	durationValue: function() {
+		var value = this.get('duration');
+		return value ? value : 0;
+	}.property('duration'),
+
+	// returns a 0:00 format
 	currentTimeFormatted: function() {
 		var time = this.get('currentTime');
 		if (!time) { return; }
@@ -195,6 +208,7 @@ export default Ember.Component.extend(/*Ember.Evented, */{
 		return minutes + ':' + seconds;
 	}.property('currentTime'),
 
+	// returns a 0:00 format
 	durationFormatted: function() {
 		var time = this.get('duration');
 		if (!time) { return; }
