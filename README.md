@@ -101,6 +101,10 @@ actions: {
 }
 ```
 
+## Autoplay on iOS
+
+iOS disables autoplay to save your precious data. I haven't been able to circumvent this. The user needs to tap the video itself before we can call the player's play/load methods. If anyone has a workaround, let me know.
+
 ## Development
 
 * `git clone` this repository
