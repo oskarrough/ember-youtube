@@ -12,6 +12,7 @@ export default Ember.Component.extend(/*Ember.Evented, */{
 	showTime: false,
 	showProgress: false,
 	showDebug: false,
+	autoplay: 1,
 
 	// progressBar: function() {
 	// 	var player = this.get('player');
@@ -44,6 +45,11 @@ export default Ember.Component.extend(/*Ember.Evented, */{
 		// iv_load_policy: 3,
 		// modestbranding: 1,
 	},
+
+	// update autoplay from true/false to 1/0 which yt api needs
+	setAutoplay: function() {
+		this.playerVars.autoplay = this.get('autoplay') ? 1 : 0;
+	}.observes('autoplay').on('init'),
 
 	isPlaying: function() {
 		var player = this.get('player');
@@ -92,11 +98,16 @@ export default Ember.Component.extend(/*Ember.Evented, */{
 		this.set('player', player);
 	},
 
+	// Load (and plays) a video every time ytid changes
 	loadVideo: function() {
 		var id = this.get('ytid');
 		if (!id) { return; }
 
-		this.get('player').loadVideoById(id);
+		if (this.playerVars.autoplay) {
+			this.get('player').loadVideoById(id);
+		} else {
+			this.get('player').cueVideoById(id);
+		}
 	}.observes('ytid'),
 
 	onPlaybackChange: function() {
