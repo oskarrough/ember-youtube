@@ -33,15 +33,17 @@ export default Ember.Component.extend(/*Ember.Evented, */{
 
 	// YouTube's embedded player can take a number of optional parameters.
 	// Full list here: https://developers.google.com/youtube/player_parameters#Parameters
+	// demo: https://developers.google.com/youtube/youtube_player_demo
 	playerVars: {
 		autoplay: 0,
 		controls: 1,
 		enablejsapi: 1,
-		rel: 0,
+		rel: 0, // disable related videos
 		showinfo: 0,
-		autohide: 1
+		autohide: 1,
+		fs: 0, // disable fullscreen button
+		playsinline: 1
 		// disablekb: 1,
-		// fs: 0,
 		// iv_load_policy: 3,
 		// modestbranding: 1,
 	},
@@ -53,8 +55,7 @@ export default Ember.Component.extend(/*Ember.Evented, */{
 
 	isPlaying: function() {
 		var player = this.get('player');
-		if (!player) { return false; }
-		if (this.get('playerState') === 'loading') { return false; }
+		if (!player || this.get('playerState') === 'loading') { return false; }
 
 		return player.getPlayerState() === YT.PlayerState.PLAYING;
 	}.property('playerState'),
@@ -64,12 +65,12 @@ export default Ember.Component.extend(/*Ember.Evented, */{
 		this.set('name', this);
 	}.on('init'),
 
+	// Load the iframe player API asynchronously from YouTube
 	loadApi: function() {
-
-		// Load the iframe player API asynchronously from YouTube
 		var tag = document.createElement('script');
-		tag.src = "https://www.youtube.com/iframe_api";
 		var firstTag = document.getElementsByTagName('script')[0];
+
+		tag.src = "https://www.youtube.com/iframe_api";
 		firstTag.parentNode.insertBefore(tag, firstTag);
 
 		// YouTube callback when API is ready
@@ -96,6 +97,15 @@ export default Ember.Component.extend(/*Ember.Evented, */{
 		});
 
 		this.set('player', player);
+		window.emberYouTubePlayer = player; // to access it outside ember
+	},
+
+	// called by the YouTube API
+	onPlayerReady: function() {
+		this.set('playerState', 'ready');
+		console.log('onPlayerReady');
+
+		this.loadVideo();
 	},
 
 	// Load (and plays) a video every time ytid changes
@@ -118,19 +128,13 @@ export default Ember.Component.extend(/*Ember.Evented, */{
 		}
 	}.observes('playbackChange'),
 
-	onVolumeChange: function() {
-		if (this.get('volume')) {
-			this.send('play');
-		} else {
-			this.send('pause');
-		}
-	}.observes('volumeChange'),
-
-	// called by YouTube
-	onPlayerReady: function() {
-		this.set('playerState', 'ready');
-		this.loadVideo();
-	},
+	// onVolumeChange: function() {
+	// 	if (this.get('volume')) {
+	// 		this.send('play');
+	// 	} else {
+	// 		this.send('pause');
+	// 	}
+	// }.observes('volumeChange'),
 
 	// called by YouTube
 	onPlayerStateChange: function(event) {
