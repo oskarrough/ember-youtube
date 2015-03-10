@@ -6,6 +6,7 @@ A simple Ember.js component to play and control single YouTube videos using the 
 {{ember-youtube ytid="fZ7MhTRmJ60"
 	name=player
 
+	autoplay=false
 	showControls=false
 	showTime=false
 	showProgress=false
@@ -20,8 +21,8 @@ A simple Ember.js component to play and control single YouTube videos using the 
 ## Features
 
 - Full support for all YouTube player events
-- External controls (make your own buttons!)
-- Custom time (4:31/7:58)
+- External controls (make your own buttons)
+- Custom time properties (for instance "4:31 / 7:58")
 - Custom progress bar (just for show, for now)
 - Error handling
 
@@ -34,7 +35,7 @@ Inside your ember-cli project do:
 Files will be included automatically by ember-cli and you can do this:
 
 ```hbs
-{{ember-youtube ytid=youTubeId}}
+{{ember-youtube ytid=youTubeId autoplay=true}}
 ```
 
 **This is very much a work in progress and my first ember addon. Please file an issue if you have any feedback or would like to contribute.**
