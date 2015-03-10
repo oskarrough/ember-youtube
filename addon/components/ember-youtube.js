@@ -1,13 +1,12 @@
 /*global YT*/
 import Ember from 'ember';
 
-export default Ember.Component.extend(/*Ember.Evented, */{
+export default Ember.Component.extend({
 	classNames: ['EmberYoutube'],
 	ytid: null,
 	player: null,
 	playerState: 'loading',
 	isMuted: false,
-
 	showControls: false,
 	showTime: false,
 	showProgress: false,
@@ -126,14 +125,7 @@ export default Ember.Component.extend(/*Ember.Evented, */{
 		}
 	}.observes('ytid'),
 
-	onPlaybackChange: function() {
-		if (this.get('playback')) {
-			this.send('play');
-		} else {
-			this.send('pause');
-		}
-	}.observes('playbackChange'),
-
+	// @todo: here for later
 	// onVolumeChange: function() {
 	// 	if (this.get('volume')) {
 	// 		this.send('play');
@@ -155,10 +147,6 @@ export default Ember.Component.extend(/*Ember.Evented, */{
 
 		// send actions inside
 		this.send(state);
-
-		// internal events using .on('event') syntax
-		// isn't available outside the component
-		// this.trigger(state);
 	},
 
 	// called by the API
