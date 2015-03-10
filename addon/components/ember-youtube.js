@@ -111,12 +111,18 @@ export default Ember.Component.extend(/*Ember.Evented, */{
 	// Load (and plays) a video every time ytid changes
 	loadVideo: function() {
 		var id = this.get('ytid');
-		if (!id) { return; }
+		var player = this.get('player');
+
+		// make sure we have access to the functions we need
+		// otherwise the player might die
+		if (!id || !player.loadVideoById || !player.cueVideoById) {
+			return;
+		}
 
 		if (this.playerVars.autoplay) {
-			this.get('player').loadVideoById(id);
+			player.loadVideoById(id);
 		} else {
-			this.get('player').cueVideoById(id);
+			player.cueVideoById(id);
 		}
 	}.observes('ytid'),
 
