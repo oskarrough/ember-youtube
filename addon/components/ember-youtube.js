@@ -102,8 +102,6 @@ export default Ember.Component.extend({
 	// called by the YouTube API
 	onPlayerReady: function() {
 		this.set('playerState', 'ready');
-		console.log('onPlayerReady');
-
 		this.loadVideo();
 	},
 
