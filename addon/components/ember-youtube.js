@@ -48,24 +48,24 @@ export default Ember.Component.extend({
 	},
 
 	// update autoplay from true/false to 1/0 which yt api needs
-	setAutoplay: function() {
+	setAutoplay: Ember.on('init', Ember.observer('autoplay', function() {
 		this.playerVars.autoplay = this.get('autoplay') ? 1 : 0;
-	}.observes('autoplay').on('init'),
+	})),
 
-	isPlaying: function() {
+	isPlaying: Ember.computed('playerState', function() {
 		var player = this.get('player');
 		if (!player || this.get('playerState') === 'loading') { return false; }
 
 		return player.getPlayerState() === YT.PlayerState.PLAYING;
-	}.property('playerState'),
+	}),
 
 	// Make the component available to the outside world
-	_register: function() {
+	_register: Ember.on('init', function() {
 		this.set('name', this);
-	}.on('init'),
+	}),
 
 	// Load the iframe player API asynchronously from YouTube
-	loadApi: function() {
+	loadApi: Ember.on('init', function() {
 		var tag = document.createElement('script');
 		var firstTag = document.getElementsByTagName('script')[0];
 
@@ -77,7 +77,7 @@ export default Ember.Component.extend({
 			// Ember.debug('yt player api ready');
 			this.createPlayer();
 		}.bind(this);
-	}.on('init'),
+	}),
 
 	createPlayer: function() {
 		var _this = this;
@@ -106,7 +106,7 @@ export default Ember.Component.extend({
 	},
 
 	// Load (and plays) a video every time ytid changes
-	loadVideo: function() {
+	loadVideo: Ember.observer('ytid', function() {
 		var id = this.get('ytid');
 		var player = this.get('player');
 
@@ -121,16 +121,16 @@ export default Ember.Component.extend({
 		} else {
 			player.cueVideoById(id);
 		}
-	}.observes('ytid'),
+	}),
 
 	// @todo: here for later
-	// onVolumeChange: function() {
+	// onVolumeChange: Ember.observer('volumeChange', function() {
 	// 	if (this.get('volume')) {
 	// 		this.send('play');
 	// 	} else {
 	// 		this.send('pause');
 	// 	}
-	// }.observes('volumeChange'),
+	// }),
 
 	// called by YouTube
 	onPlayerStateChange: function(event) {
@@ -194,35 +194,35 @@ export default Ember.Component.extend({
 	},
 
 	// avoids 'undefined' value for the <progress> element
-	currentTimeValue: function() {
+	currentTimeValue: Ember.computed('currentTime', function() {
 		var value = this.get('currentTime');
 		return value ? value : 0;
-	}.property('currentTime'),
+	}),
 
 	// avoids 'undefined' value for the <progress> element
-	durationValue: function() {
+	durationValue: Ember.computed('duration', function() {
 		var value = this.get('duration');
 		return value ? value : 0;
-	}.property('duration'),
+	}),
 
 	// returns a 0:00 format
-	currentTimeFormatted: function() {
+	currentTimeFormatted: Ember.computed('currentTime', function() {
 		var time = this.get('currentTime');
 		if (!time) { return; }
 		var minutes = Math.floor(time / 60);
 		var seconds = Math.floor(time - minutes * 60);
 		if (seconds < 10) { seconds = '0' + seconds; }
 		return minutes + ':' + seconds;
-	}.property('currentTime'),
+	}),
 
 	// returns a 0:00 format
-	durationFormatted: function() {
+	durationFormatted: Ember.computed('duration', function() {
 		var time = this.get('duration');
 		if (!time) { return; }
 		var minutes = Math.floor(time / 60);
 		var seconds = time - minutes * 60;
 		return minutes + ':' + seconds;
-	}.property('duration'),
+	}),
 
 	actions: {
 		load: function() { this.get('player').loadVideo(); },
