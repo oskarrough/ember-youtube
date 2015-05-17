@@ -28,11 +28,27 @@ A simple Ember.js component to play and control single YouTube videos using the 
 - Custom progress bar (just for show, for now)
 - Error handling
 
+## Installation
+
+Inside your ember-cli project run:
+
+```bash
+ember install ember-youtube
+```
+
+#### ember-cli 0.1.5 - 0.2.2
+
+```bash
+ember install:addon ember-youtube
+```
+
+#### Without ember-cli
+
+```bash
+npm install --save-dev ember-youtube
+```
+
 ## Usage
-
-Inside your ember-cli project do:
-
-`npm install --save-dev ember-youtube`
 
 Files will be included automatically by ember-cli and you can do this:
 
