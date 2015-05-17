@@ -4,7 +4,9 @@ A simple Ember.js component to play and control single YouTube videos using the 
 
 ```hbs
 {{ember-youtube ytid="fZ7MhTRmJ60"
-	name=player
+
+	delegate=controller
+	delegate-property="emberYoutube"
 
 	autoplay=false
 	showControls=false
@@ -44,32 +46,32 @@ Files will be included automatically by ember-cli and you can do this:
 
 If you want your own buttons, you need to do two things:
 
-1) Give the ember-youtube component a `name`.
+1) Make the ember-youtube available outside. Do this with `delegate` and `delegate-property`.
 This exposes the component and gives you a target for your actions.
 
 ```hbs
-{{ember-youtube ytid=youTubeId name=myPlayer}}
+{{ember-youtube ytid=youTubeId delegate=controller delegate-property="emberYoutube"}}
 ```
 
 2) Specify a target on your actions
 Because we gave it a name, you actually have complete access to the insides of the component. Be careful.
 
 ```hbs
-<button {{action "togglePlay" target="myPlayer"}}>
-	{{#if myPlayer.isPlaying}}Pause{{else}}Play{{/if}}
+<button {{action "togglePlay" target="emberYoutube"}}>
+	{{#if emberYoutube.isPlaying}}Pause{{else}}Play{{/if}}
 </button>
-<button {{action "toggleVolume" target="myPlayer"}}>
-	{{#if myPlayer.isMuted}}Unmute{{else}}Mute{{/if}}
+<button {{action "toggleVolume" target="emberYoutube"}}>
+	{{#if emberYoutube.isMuted}}Unmute{{else}}Mute{{/if}}
 </button>
 ```
 
 You can also do this:
 
 ```hbs
-<button {{action "play" target="myPlayer"}}>Play</button>
-<button {{action "pause" target="myPlayer"}}>Pause</button>
-<button {{action "mute" target="myPlayer"}}>Mute</button>
-<button {{action "unMute" target="myPlayer"}}>Unmute</button>
+<button {{action "play" target="emberYoutube"}}>Play</button>
+<button {{action "pause" target="emberYoutube"}}>Pause</button>
+<button {{action "mute" target="emberYoutube"}}>Mute</button>
+<button {{action "unMute" target="emberYoutube"}}>Unmute</button>
 ```
 
 ## Events
