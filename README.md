@@ -146,3 +146,5 @@ For more information on using ember-cli, visit [http://www.ember-cli.com/](http:
 * https://github.com/brandly/angular-youtube-embed
 * http://emberjs.com/guides/components/sending-actions-from-components-to-your-application/
 * https://github.com/jasonkriss/ember-flash-message
+
+Thanks to https://github.com/oskarrough/ember-youtube/graphs/contributors.
