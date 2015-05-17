@@ -40,16 +40,18 @@ export default Ember.Component.extend({
 		// modestbranding: 1,
 	},
 
+	// Make the component available to the outside world
+	_register: Ember.on('init', function() {
+		// this.set('name', this);
+		if (this.get('delegate')) {
+			this.get('delegate').set(this.get('delegate-property') || "default", this);
+		}
+	}),
+
 	// update autoplay from true/false to 1/0 which yt api needs
 	setAutoplay: Ember.on('init', Ember.observer('autoplay', function() {
 		this.playerVars.autoplay = this.get('autoplay') ? 1 : 0;
 	})),
-
-
-	// Make the component available to the outside world
-	_register: Ember.on('init', function() {
-		this.set('name', this);
-	}),
 
 	// Load the iframe player API asynchronously from YouTube
 	loadApi: Ember.on('init', function() {

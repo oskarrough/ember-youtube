@@ -7,11 +7,11 @@
 <p>{{input value=youTubeId}}</p>
 
 <menu>
-	<button {{action "togglePlay" target="myPlayer"}}>
-		{{#if myPlayer.isPlaying}}Pause{{else}}Play{{/if}}
+	<button {{action "togglePlay" target="controller.emberYoutube"}}>
+		{{#if isPlaying}}Pause{{else}}Play{{/if}}
 	</button>
-	<button {{action "toggleVolume" target="myPlayer"}}>
-		{{#if myPlayer.isMuted}}Unmute{{else}}Mute{{/if}}
+	<button {{action "toggleVolume" target="controller.emberYoutube"}}>
+		{{#if isMuted}}Unmute{{else}}Mute{{/if}}
 	</button>
 </menu>
 
