@@ -55,8 +55,8 @@ export default Ember.Component.extend({
 
 	// Load the iframe player API asynchronously from YouTube
 	loadApi: Ember.on('init', function() {
-		var tag = document.createElement('script');
-		var firstTag = document.getElementsByTagName('script')[0];
+		let tag = document.createElement('script');
+		let firstTag = document.getElementsByTagName('script')[0];
 
 		tag.src = "https://www.youtube.com/iframe_api";
 		firstTag.parentNode.insertBefore(tag, firstTag);
@@ -69,18 +69,18 @@ export default Ember.Component.extend({
 	}),
 
 	isPlaying: Ember.computed('playerState', function() {
-		var player = this.get('player');
+		let player = this.get('player');
 		if (!player || this.get('playerState') === 'loading') { return false; }
 
 		return player.getPlayerState() === YT.PlayerState.PLAYING;
 	}),
 
 	createPlayer: function() {
-		var _this = this;
-		var playerVars = this.get('playerVars');
-		var $iframe = this.$('#EmberYoutube-player');
+		let _this = this;
+		let playerVars = this.get('playerVars');
+		let $iframe = this.$('#EmberYoutube-player');
 
-		var player = new YT.Player($iframe[0], {
+		let player = new YT.Player($iframe[0], {
 			width: 360,
 			height: 270,
 			playerVars: playerVars,
@@ -103,8 +103,8 @@ export default Ember.Component.extend({
 
 	// Load (and plays) a video every time ytid changes
 	loadVideo: Ember.observer('ytid', function() {
-		var id = this.get('ytid');
-		var player = this.get('player');
+		let id = this.get('ytid');
+		let player = this.get('player');
 
 		// make sure we have access to the functions we need
 		// otherwise the player might die
@@ -131,7 +131,7 @@ export default Ember.Component.extend({
 	// called by YouTube
 	onPlayerStateChange: function(event) {
 		// Get a readable state name
-		var state = this.get('stateNames.' + event.data.toString());
+		let state = this.get('stateNames.' + event.data.toString());
 		this.set('playerState', state);
 
 		// Ember.debug(state);
@@ -145,7 +145,7 @@ export default Ember.Component.extend({
 
 	// called by the API
 	onPlayerError: function(event) {
-		var errorCode = event.data;
+		let errorCode = event.data;
 		this.set('playerState', 'error');
 
 		Ember.warn('error' + errorCode);
@@ -172,13 +172,13 @@ export default Ember.Component.extend({
 	},
 
 	startTimer: function() {
-		var player = this.get('player');
+		let player = this.get('player');
 
 		this.set('currentTime', player.getCurrentTime());
 		this.set('duration', player.getDuration());
 
 		// every 60ms, update current time
-		var timer = window.setInterval(function() {
+		let timer = window.setInterval(function() {
 			this.set('currentTime', player.getCurrentTime());
 		}.bind(this), 60);
 
@@ -191,32 +191,32 @@ export default Ember.Component.extend({
 
 	// avoids 'undefined' value for the <progress> element
 	currentTimeValue: Ember.computed('currentTime', function() {
-		var value = this.get('currentTime');
-		return value ? value : 0;
-	}),
-
-	// avoids 'undefined' value for the <progress> element
-	durationValue: Ember.computed('duration', function() {
-		var value = this.get('duration');
+		let value = this.get('currentTime');
 		return value ? value : 0;
 	}),
 
 	// returns a 0:00 format
 	currentTimeFormatted: Ember.computed('currentTime', function() {
-		var time = this.get('currentTime');
+		let time = this.get('currentTime');
 		if (!time) { return; }
-		var minutes = Math.floor(time / 60);
-		var seconds = Math.floor(time - minutes * 60);
+		let minutes = Math.floor(time / 60);
+		let seconds = Math.floor(time - minutes * 60);
 		if (seconds < 10) { seconds = '0' + seconds; }
 		return minutes + ':' + seconds;
 	}),
 
+	// avoids 'undefined' value for the <progress> element
+	durationValue: Ember.computed('duration', function() {
+		let value = this.get('duration');
+		return value ? value : 0;
+	}),
+
 	// returns a 0:00 format
 	durationFormatted: Ember.computed('duration', function() {
-		var time = this.get('duration');
+		let time = this.get('duration');
 		if (!time) { return; }
-		var minutes = Math.floor(time / 60);
-		var seconds = time - minutes * 60;
+		let minutes = Math.floor(time / 60);
+		let seconds = time - minutes * 60;
 		return minutes + ':' + seconds;
 	}),
 
@@ -252,7 +252,7 @@ export default Ember.Component.extend({
 			}
 		},
 		toggleVolume: function() {
-			var player = this.get('player');
+			let player = this.get('player');
 			this.toggleProperty('isMuted');
 			if (player.isMuted()) {
 				this.send('unMute');
