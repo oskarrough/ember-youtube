@@ -11,14 +11,7 @@ export default Ember.Component.extend({
 	showTime: false,
 	showProgress: false,
 	showDebug: false,
-	autoplay: 1,
-
-	// progressBar: function() {
-	// 	var player = this.get('player');
-	// 	player.getCurrentTime // 205.32458
-	// 	player.getDuration // 478.145305
-	// 	player.seekTo
-	// }.on('playing')
+	autoplay: 0,
 
 	// from YT.PlayerState
 	stateNames: {
@@ -52,12 +45,6 @@ export default Ember.Component.extend({
 		this.playerVars.autoplay = this.get('autoplay') ? 1 : 0;
 	})),
 
-	isPlaying: Ember.computed('playerState', function() {
-		var player = this.get('player');
-		if (!player || this.get('playerState') === 'loading') { return false; }
-
-		return player.getPlayerState() === YT.PlayerState.PLAYING;
-	}),
 
 	// Make the component available to the outside world
 	_register: Ember.on('init', function() {
@@ -77,6 +64,13 @@ export default Ember.Component.extend({
 			// Ember.debug('yt player api ready');
 			this.createPlayer();
 		}.bind(this);
+	}),
+
+	isPlaying: Ember.computed('playerState', function() {
+		var player = this.get('player');
+		if (!player || this.get('playerState') === 'loading') { return false; }
+
+		return player.getPlayerState() === YT.PlayerState.PLAYING;
 	}),
 
 	createPlayer: function() {
@@ -223,6 +217,13 @@ export default Ember.Component.extend({
 		var seconds = time - minutes * 60;
 		return minutes + ':' + seconds;
 	}),
+
+	// progressBar: function() {
+	// 	var player = this.get('player');
+	// 	player.getCurrentTime // 205.32458
+	// 	player.getDuration // 478.145305
+	// 	player.seekTo
+	// }.on('playing')
 
 	actions: {
 		load: function() { this.get('player').loadVideo(); },

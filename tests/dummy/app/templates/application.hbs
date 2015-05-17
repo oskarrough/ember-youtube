@@ -1,8 +1,11 @@
-<h2 id="title">Welcome to Ember.js</h2>
+<h2 id="title">ember-youtube demo</h2>
+
+<p>Demo of the ember-youtube component.</p>
 
 <p>You can control the component directly from the controller by target the component in your actions. Try changing the YouTube ID or tap the buttons below.</p>
 
 <p>{{input value=youTubeId}}</p>
+
 <menu>
 	<button {{action "togglePlay" target="myPlayer"}}>
 		{{#if myPlayer.isPlaying}}Pause{{else}}Play{{/if}}
@@ -13,15 +16,17 @@
 </menu>
 
 <h2>components/ember-youtube</h2>
-{{ember-youtube ytid=youTubeId
-	name=myPlayer
-	debug=false
-	showControls=true
+{{ember-youtube
+	ytid=youTubeId
+	showDebug=true
+	showControls=false
 	showTime=true
 	showProgress=true
-	autoplay=true
+	autoplay=false
+	delegate=controller delegate-property="emberYoutube"
 	playing="ytPlaying"
 	paused="ytPaused"
 	ended="ytEnded"}}
 
-	{{outlet}}
+
+{{outlet}}
