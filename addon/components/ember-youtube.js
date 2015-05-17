@@ -220,12 +220,23 @@ export default Ember.Component.extend({
 		return minutes + ':' + seconds;
 	}),
 
-	// progressBar: function() {
-	// 	var player = this.get('player');
-	// 	player.getCurrentTime // 205.32458
-	// 	player.getDuration // 478.145305
-	// 	player.seekTo
-	// }.on('playing')
+	// OK, this is really stupid but couldn't access the "event" inside
+	// an ember action so here do a manual click handler instead
+	progressBarClick: Ember.on('didInsertElement', function() {
+		let self = this;
+
+		this.$().on('click', 'progress', function(event) {
+
+			// get the x position of the click inside our progress el
+			let x = event.pageX - Ember.$(this).position().left;
+
+			// convert it to a value relative to the duration (max)
+			let clickedValue = x * this.max / this.offsetWidth;
+
+			// 250 = 0.25 seconds into player
+			self.send('seekTo', clickedValue);
+		});
+	}),
 
 	actions: {
 		load: function() { this.get('player').loadVideo(); },
@@ -248,6 +259,9 @@ export default Ember.Component.extend({
 			} else {
 				this.send('mute');
 			}
+		},
+		seekTo(ms) {
+			this.get('player').seekTo(ms);
 		},
 
 		// youtube events
