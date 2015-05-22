@@ -42,10 +42,14 @@ export default Ember.Component.extend({
 
 	// Make the component available to the outside world
 	_register: Ember.on('init', function() {
-		// this.set('name', this);
-		if (this.get('delegate')) {
-			this.get('delegate').set(this.get('delegate-property') || "default", this);
-		}
+		Ember.run.schedule('afterRender', this, function() {
+			if (this.get('delegate')) {
+				Ember.debug('delegating');
+				Ember.debug(this.get('delegate'));
+				Ember.debug(this);
+				this.get('delegate').set(this.get('delegate-as') || "emberYoutubePlayer", this);
+			}
+		});
 	}),
 
 	// update autoplay from true/false to 1/0 which yt api needs
@@ -109,6 +113,7 @@ export default Ember.Component.extend({
 		// make sure we have access to the functions we need
 		// otherwise the player might die
 		if (!id || !player.loadVideoById || !player.cueVideoById) {
+			Ember.debug('no id');
 			return;
 		}
 

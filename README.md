@@ -6,7 +6,7 @@ A simple Ember.js component to play and control single YouTube videos using the 
 {{ember-youtube ytid="fZ7MhTRmJ60"
 
 	delegate=controller
-	delegate-property="emberYoutube"
+	delegate-as="myPlayer"
 
 	autoplay=false
 	showControls=false
@@ -56,38 +56,38 @@ Files will be included automatically by ember-cli and you can do this:
 {{ember-youtube ytid=youTubeId autoplay=true}}
 ```
 
-**This is very much a work in progress and my first ember addon. Please file an issue if you have any feedback or would like to contribute.**
-
 ## External controls
 
 If you want your own buttons, you need to do two things:
 
-1) Make the ember-youtube available outside. Do this with `delegate` and `delegate-property`.
+1) Make the ember-youtube available outside. Do this with `delegate` and `delegate-as`.
+
 This exposes the component and gives you a target for your actions.
 
 ```hbs
-{{ember-youtube ytid=youTubeId delegate=controller delegate-property="emberYoutube"}}
+{{ember-youtube ytid=youTubeId delegate=controller delegate-as="myPlayer"}}
 ```
 
 2) Specify a target on your actions
+
 Because we gave it a name, you actually have complete access to the insides of the component. Be careful.
 
 ```hbs
-<button {{action "togglePlay" target="emberYoutube"}}>
-	{{#if emberYoutube.isPlaying}}Pause{{else}}Play{{/if}}
+<button {{action "togglePlay" target=myPlayer}}>
+	{{#if myPlayer.isPlaying}}Pause{{else}}Play{{/if}}
 </button>
 <button {{action "toggleVolume" target="emberYoutube"}}>
-	{{#if emberYoutube.isMuted}}Unmute{{else}}Mute{{/if}}
+	{{#if myPlayer.isMuted}}Unmute{{else}}Mute{{/if}}
 </button>
 ```
 
 You can also do this:
 
 ```hbs
-<button {{action "play" target="emberYoutube"}}>Play</button>
-<button {{action "pause" target="emberYoutube"}}>Pause</button>
-<button {{action "mute" target="emberYoutube"}}>Mute</button>
-<button {{action "unMute" target="emberYoutube"}}>Unmute</button>
+<button {{action "play" target=myPlayer}}>Play</button>
+<button {{action "pause" target=myPlayer}}>Pause</button>
+<button {{action "mute" target=myPlayer}}>Mute</button>
+<button {{action "unMute" target=myPlayer}}>Unmute</button>
 ```
 
 ## Events
@@ -146,14 +146,7 @@ iOS disables autoplay to save your precious data. I haven't been able to circumv
 
 For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
 
-## Ember addon links
-
-* http://www.ember-cli.com/#developing-addons-and-blueprints
-* http://reefpoints.dockyard.com/2014/06/24/introducing_ember_cli_addons.html
-* http://hashrocket.com/blog/posts/building-ember-addons
-* https://github.com/jasonkriss/ember-flash-message
-
-## YouTube links
+## Similar projects
 
 * https://www.npmjs.com/package/react-youtube
 * https://github.com/mikecrittenden/tangletube
@@ -162,7 +155,7 @@ For more information on using ember-cli, visit [http://www.ember-cli.com/](http:
 * http://urli.st/8hw-Building-an-app-in-emberjs
 * http://cejast.github.io/ng-youtube/
 * https://github.com/brandly/angular-youtube-embed
-* http://emberjs.com/guides/components/sending-actions-from-components-to-your-application/
-* https://github.com/jasonkriss/ember-flash-message
+
+**This is very much a work in progress and my first ember addon. Please file an issue if you have any feedback or would like to contribute.**
 
 Thanks to https://github.com/oskarrough/ember-youtube/graphs/contributors.

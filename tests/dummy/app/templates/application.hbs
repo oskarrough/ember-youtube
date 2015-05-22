@@ -7,26 +7,29 @@
 <p>{{input value=youTubeId}}</p>
 
 <menu>
-	<button {{action "togglePlay" target="controller.emberYoutube"}}>
-		{{#if isPlaying}}Pause{{else}}Play{{/if}}
+	<button {{action "togglePlay" target=myPlayer}}>
+		{{#if myPlayer.isPlaying}}Pause{{else}}Play{{/if}}
 	</button>
-	<button {{action "toggleVolume" target="controller.emberYoutube"}}>
-		{{#if isMuted}}Unmute{{else}}Mute{{/if}}
+	<button {{action "toggleVolume" target=myPlayer}}>
+		{{#if myPlayer.isMuted}}Unmute{{else}}Mute{{/if}}
 	</button>
 </menu>
 
 <h2>components/ember-youtube</h2>
 {{ember-youtube
 	ytid=youTubeId
-	showDebug=true
+
 	showControls=false
 	showTime=true
 	showProgress=true
-	autoplay=false
-	delegate=controller delegate-property="emberYoutube"
+
+	delegate=controller
+	delegate-as="myPlayer"
+
+	showDebug=true
+
 	playing="ytPlaying"
 	paused="ytPaused"
 	ended="ytEnded"}}
-
 
 {{outlet}}
