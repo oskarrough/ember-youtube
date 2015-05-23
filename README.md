@@ -148,6 +148,7 @@ For more information on using ember-cli, visit [http://www.ember-cli.com/](http:
 
 ## Similar projects
 
+* https://github.com/gilesvangruisen/Swift-YouTube-Player
 * https://www.npmjs.com/package/react-youtube
 * https://github.com/mikecrittenden/tangletube
 * https://github.com/4South/ember-youtube/blob/master/public/js/views/YoutubeView.js
