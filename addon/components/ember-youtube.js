@@ -1,6 +1,8 @@
 /*global YT*/
 import Ember from 'ember';
 
+const { computed, debug, observer, on, run } = Ember;
+
 export default Ember.Component.extend({
 	classNames: ['EmberYoutube'],
 	ytid: null,
@@ -41,24 +43,24 @@ export default Ember.Component.extend({
 	},
 
 	// Make the component available to the outside world
-	_register: Ember.on('init', function() {
-		Ember.run.schedule('afterRender', this, function() {
+	_register: on('init', function() {
+		run.schedule('afterRender', this, function() {
 			if (this.get('delegate')) {
-				Ember.debug('delegating');
-				Ember.debug(this.get('delegate'));
-				Ember.debug(this);
+				if (this.get('showDebug')) { debug('delegating'); }
+				if (this.get('showDebug')) { debug(this.get('delegate')); }
+				if (this.get('showDebug')) { debug(this); }
 				this.get('delegate').set(this.get('delegate-as') || "emberYoutubePlayer", this);
 			}
 		});
 	}),
 
 	// update autoplay from true/false to 1/0 which yt api needs
-	setAutoplay: Ember.on('init', Ember.observer('autoplay', function() {
+	setAutoplay: on('init', Ember.observer('autoplay', function() {
 		this.playerVars.autoplay = this.get('autoplay') ? 1 : 0;
 	})),
 
 	// Load the iframe player API asynchronously from YouTube
-	loadApi: Ember.on('init', function() {
+	loadApi: on('init', function() {
 		let tag = document.createElement('script');
 		let firstTag = document.getElementsByTagName('script')[0];
 
@@ -67,12 +69,12 @@ export default Ember.Component.extend({
 
 		// YouTube callback when API is ready
 		window.onYouTubePlayerAPIReady = function() {
-			// Ember.debug('yt player api ready');
+			if (this.get('showDebug')) { debug('yt player api ready'); }
 			this.createPlayer();
 		}.bind(this);
 	}),
 
-	isPlaying: Ember.computed('playerState', function() {
+	isPlaying: computed('playerState', function() {
 		let player = this.get('player');
 		if (!player || this.get('playerState') === 'loading') { return false; }
 
@@ -113,7 +115,7 @@ export default Ember.Component.extend({
 		// make sure we have access to the functions we need
 		// otherwise the player might die
 		if (!id || !player.loadVideoById || !player.cueVideoById) {
-			Ember.debug('no id');
+			if (this.get('showDebug')) { debug('no id'); }
 			return;
 		}
 
@@ -139,7 +141,7 @@ export default Ember.Component.extend({
 		let state = this.get('stateNames.' + event.data.toString());
 		this.set('playerState', state);
 
-		// Ember.debug(state);
+		if (this.get('showDebug')) { debug(state); }
 
 		// send actions outside
 		this.sendAction(state);
@@ -195,13 +197,13 @@ export default Ember.Component.extend({
 	},
 
 	// avoids 'undefined' value for the <progress> element
-	currentTimeValue: Ember.computed('currentTime', function() {
+	currentTimeValue: computed('currentTime', function() {
 		let value = this.get('currentTime');
 		return value ? value : 0;
 	}),
 
 	// returns a 0:00 format
-	currentTimeFormatted: Ember.computed('currentTime', function() {
+	currentTimeFormatted: computed('currentTime', function() {
 		let time = this.get('currentTime');
 		if (!time) { return; }
 		let minutes = Math.floor(time / 60);
@@ -211,13 +213,13 @@ export default Ember.Component.extend({
 	}),
 
 	// avoids 'undefined' value for the <progress> element
-	durationValue: Ember.computed('duration', function() {
+	durationValue: computed('duration', function() {
 		let value = this.get('duration');
 		return value ? value : 0;
 	}),
 
 	// returns a 0:00 format
-	durationFormatted: Ember.computed('duration', function() {
+	durationFormatted: computed('duration', function() {
 		let time = this.get('duration');
 		if (!time) { return; }
 		let minutes = Math.floor(time / 60);
@@ -227,7 +229,7 @@ export default Ember.Component.extend({
 
 	// OK, this is really stupid but couldn't access the "event" inside
 	// an ember action so here do a manual click handler instead
-	progressBarClick: Ember.on('didInsertElement', function() {
+	progressBarClick: on('didInsertElement', function() {
 		let self = this;
 
 		this.$().on('click', 'progress', function(event) {
