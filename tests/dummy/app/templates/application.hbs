@@ -16,6 +16,7 @@
 </menu>
 
 <h2>components/ember-youtube</h2>
+<div>{{myPlayer.currentTimeFormatted}} / {{myPlayer.durationFormatted}}</div>
 {{ember-youtube
 	ytid=youTubeId
 
@@ -27,6 +28,10 @@
 	delegate-as="myPlayer"
 
 	showDebug=true
+	autoplay=true
+
+	currentTimeFormat="mm:ss"
+	durationFormat="mm:ss"
 
 	playing="ytPlaying"
 	paused="ytPaused"
