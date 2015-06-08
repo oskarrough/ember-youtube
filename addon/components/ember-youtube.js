@@ -9,7 +9,7 @@ export default Ember.Component.extend({
 	player: null,
 	playerState: 'loading',
 	isMuted: false,
-	volume: 0,
+	volume: 100,
 	showControls: false,
 	showTime: false,
 	showProgress: false,
@@ -56,7 +56,7 @@ export default Ember.Component.extend({
 	}),
 
 	// update autoplay from true/false to 1/0 which yt api needs
-	setAutoplay: on('init', Ember.observer('autoplay', function() {
+	setAutoplay: on('init', observer('autoplay', function() {
 		this.playerVars.autoplay = this.get('autoplay') ? 1 : 0;
 	})),
 
@@ -109,7 +109,7 @@ export default Ember.Component.extend({
 	},
 
 	// Load (and plays) a video every time ytid changes
-	loadVideo: Ember.observer('ytid', function() {
+	loadVideo: observer('ytid', function() {
 		let id = this.get('ytid');
 		let player = this.get('player');
 
@@ -127,16 +127,18 @@ export default Ember.Component.extend({
 		}
 	}),
 
-	onVolumeChange: Ember.observer('volume', function() {
+	onVolumeChange: observer('volume', function() {
+		let volume = this.get('volume');
+
 		// keep values between 0 and 100
-		if (this.get('volume') > 100) {
+		if (volume > 100) {
 			this.set('volume', 100);
-		} else if (this.get('volume') < 0) {
+		} else if (volume < 0) {
 			this.set('volume', 0);
 		}
 
 		// set it on the player
-		this.get('player').setVolume(this.get('volume'));
+		this.get('player').setVolume(volume);
 	 }),
 
 	// called by YouTube
