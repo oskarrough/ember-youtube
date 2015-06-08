@@ -2,6 +2,8 @@
 
 A simple Ember.js component to play and control single YouTube videos using the iframe API. It will autoplay as soon as you pass a YouTube ID.
 
+See a demonstration at http://ember-youtube.surge.sh.
+
 ```hbs
 {{ember-youtube
 	ytid="fZ7MhTRmJ60"
