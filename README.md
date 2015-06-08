@@ -3,16 +3,18 @@
 A simple Ember.js component to play and control single YouTube videos using the iframe API. It will autoplay as soon as you pass a YouTube ID.
 
 ```hbs
-{{ember-youtube ytid="fZ7MhTRmJ60"
+{{ember-youtube
+	ytid="fZ7MhTRmJ60"
+	autoplay=true
+	volume=100
 
-	delegate=controller
-	delegate-as="myPlayer"
-
-	autoplay=false
 	showControls=false
 	showTime=false
 	showProgress=false
 	showDebug=false
+
+	delegate=controller
+	delegate-as="myPlayer"
 
 	playing="ytPlaying"
 	paused="ytPaused"
@@ -24,8 +26,8 @@ A simple Ember.js component to play and control single YouTube videos using the 
 
 - Full support for all YouTube player events
 - External controls (make your own buttons)
-- Custom time properties (for instance "4:31 / 7:58")
-- Custom progress bar (just for show, for now)
+- Custom time properties (for instance "4:31 / 7:58") formatted with Moment.js
+- Custom progress bar in full sync with the YouTube player
 - Error handling
 
 ## Installation
@@ -36,33 +38,29 @@ Inside your ember-cli project run:
 ember install ember-youtube
 ```
 
-#### ember-cli 0.1.5 - 0.2.2
+For ember-cli 0.1.5 - 0.2.2, please use:
 
 ```bash
 ember install:addon ember-youtube
 ```
 
-#### Without ember-cli
-
-```bash
-npm install --save-dev ember-youtube
-```
-
 ## Usage
 
-Files will be included automatically by ember-cli and you can do this:
+As it's an ember addon everything will be merged into your application which means you'll be able to do this immediately:
 
 ```hbs
 {{ember-youtube ytid=youTubeId autoplay=true}}
 ```
 
+Beautiful, no? All available settings are in the example at the top of this file. You can also see the component file directly: [addon/components/ember-youtube.js](https://github.com/oskarrough/ember-youtube/blob/master/addon/components/ember-youtube.js).
+
 ## External controls
 
 If you want your own buttons, you need to do two things:
 
-1) Make the ember-youtube available outside. Do this with `delegate` and `delegate-as`.
+1) Make the ember-youtube available to outside which normally means your controller. You do this with the `delegate` and `delegate-as` properties of ember-youtube.
 
-This exposes the component and gives you a target for your actions.
+They expose the component and give you a target for your actions. Like this:
 
 ```hbs
 {{ember-youtube ytid=youTubeId delegate=controller delegate-as="myPlayer"}}
@@ -70,7 +68,9 @@ This exposes the component and gives you a target for your actions.
 
 2) Specify a target on your actions
 
-Because we gave it a name, you actually have complete access to the insides of the component. Be careful.
+Now, and because we used `delegate` and `delegate-as`, you actually have complete access to the insides of the component. Be careful.
+
+But it allows you to do this in the template where you include the player:
 
 ```hbs
 <button {{action "togglePlay" target=myPlayer}}>
@@ -92,7 +92,7 @@ You can also do this:
 
 ## Events
 
-The component send four different events: `playing`, `paused`, `ended` and `buffering`. You can bind them to actions in your controller. Like this:
+The ember-youtube component send four different actions: `playing`, `paused`, `ended` and `buffering`. You should map them to your own actions like this:
 
 ```hbs
 {{ember-youtube ytid="fZ7MhTRmJ60"
@@ -122,7 +122,7 @@ actions: {
 
 ## Autoplay on iOS
 
-iOS disables autoplay to save your precious data. I haven't been able to circumvent this. The user needs to tap the video itself before we can call the player's play/load methods. If anyone has a workaround, let me know.
+On iOS autoplay of videos is disabled by Apple to save your precious data. I haven't been able to circumvent this. The user needs to tap the video itself before we can call the player's play/load methods. If anyone has a workaround, let me know.
 
 ## Development
 
@@ -140,22 +140,15 @@ iOS disables autoplay to save your precious data. I haven't been able to circumv
 * `ember test`
 * `ember test --server`
 
-## Building
-
-* `ember build`
-
 For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
 
 ## Similar projects
 
-* https://github.com/gilesvangruisen/Swift-YouTube-Player
 * https://www.npmjs.com/package/react-youtube
-* https://github.com/mikecrittenden/tangletube
-* https://github.com/4South/ember-youtube/blob/master/public/js/views/YoutubeView.js
-* http://alg.github.io/talks/emberjs/#/title
-* http://urli.st/8hw-Building-an-app-in-emberjs
 * http://cejast.github.io/ng-youtube/
 * https://github.com/brandly/angular-youtube-embed
+* https://github.com/gilesvangruisen/Swift-YouTube-Player
+* https://github.com/mikecrittenden/tangletube
 
 **This is very much a work in progress and my first ember addon. Please file an issue if you have any feedback or would like to contribute.**
 
