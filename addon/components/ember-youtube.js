@@ -2,6 +2,7 @@
 import Ember from 'ember';
 
 const { computed, debug, observer, on, run } = Ember;
+var moment = window.moment;
 
 export default Ember.Component.extend({
 	classNames: ['EmberYoutube'],
@@ -15,6 +16,8 @@ export default Ember.Component.extend({
 	showProgress: false,
 	showDebug: false,
 	autoplay: 0,
+	currentTimeFormat: "mm:ss",
+	durationFormat: "mm:ss",
 
 	// from YT.PlayerState
 	stateNames: {
@@ -208,14 +211,13 @@ export default Ember.Component.extend({
 		return value ? value : 0;
 	}),
 
-	// returns a 0:00 format
-	currentTimeFormatted: computed('currentTime', function() {
+	// returns a momentJS formated date based on "currentTimeFormat" property
+	currentTimeFormatted: computed('currentTime', 'currentTimeFormat', function() {
 		let time = this.get('currentTime');
-		if (!time) { return; }
-		let minutes = Math.floor(time / 60);
-		let seconds = Math.floor(time - minutes * 60);
-		if (seconds < 10) { seconds = '0' + seconds; }
-		return minutes + ':' + seconds;
+		let format = this.get('currentTimeFormat');
+		if (!time || !format) { return; }
+		let duration = moment.duration(time, 'seconds');		
+		return duration.format(format);
 	}),
 
 	// avoids 'undefined' value for the <progress> element
@@ -224,13 +226,13 @@ export default Ember.Component.extend({
 		return value ? value : 0;
 	}),
 
-	// returns a 0:00 format
-	durationFormatted: computed('duration', function() {
+	// returns a momentJS formated date based on "durationFormat" property
+	durationFormatted: computed('duration', 'durationFormat', function() {
 		let time = this.get('duration');
-		if (!time) { return; }
-		let minutes = Math.floor(time / 60);
-		let seconds = time - minutes * 60;
-		return minutes + ':' + seconds;
+		let format = this.get('durationFormat');
+		if (!time || !format) { return; }
+		let duration = moment.duration(time, 'seconds');		
+		return duration.format(format);
 	}),
 
 	// OK, this is really stupid but couldn't access the "event" inside
