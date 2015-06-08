@@ -5,6 +5,7 @@
 <p>You can control the component directly from the controller by target the component in your actions. Try changing the YouTube ID or tap the buttons below.</p>
 
 <p>{{input value=youTubeId}}</p>
+<p>Volume : {{input value=volume}}</p>
 
 <menu>
 	<button {{action "togglePlay" target=myPlayer}}>
@@ -18,15 +19,14 @@
 <h2>components/ember-youtube</h2>
 {{ember-youtube
 	ytid=youTubeId
-
+	volume=volume
 	showControls=false
 	showTime=true
 	showProgress=true
+	showDebug=true
 
 	delegate=controller
 	delegate-as="myPlayer"
-
-	showDebug=true
 
 	playing="ytPlaying"
 	paused="ytPaused"

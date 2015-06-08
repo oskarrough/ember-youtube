@@ -9,6 +9,7 @@ export default Ember.Component.extend({
 	player: null,
 	playerState: 'loading',
 	isMuted: false,
+	volume: 0,
 	showControls: false,
 	showTime: false,
 	showProgress: false,
@@ -126,14 +127,17 @@ export default Ember.Component.extend({
 		}
 	}),
 
-	// @todo: here for later
-	// onVolumeChange: Ember.observer('volumeChange', function() {
-	// 	if (this.get('volume')) {
-	// 		this.send('play');
-	// 	} else {
-	// 		this.send('pause');
-	// 	}
-	// }),
+	onVolumeChange: Ember.observer('volume', function() {
+		// keep values between 0 and 100
+		if (this.get('volume') > 100) {
+			this.set('volume', 100);
+		} else if (this.get('volume') < 0) {
+			this.set('volume', 0);
+		}
+
+		// set it on the player
+		this.get('player').setVolume(this.get('volume'));
+	 }),
 
 	// called by YouTube
 	onPlayerStateChange: function(event) {

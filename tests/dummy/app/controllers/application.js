@@ -2,7 +2,8 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
 	youTubeId: 'fZ7MhTRmJ60', // NEFrNP-BLcI
-
+	volume: 100,
+    
 	actions: {
 		ytPlaying: function() {
 			Ember.debug('on playing from controller');
