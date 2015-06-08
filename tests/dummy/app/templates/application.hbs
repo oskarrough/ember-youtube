@@ -1,24 +1,39 @@
-<h2 id="title">ember-youtube demo</h2>
+<h1>Ember YouTube</h1>
 
-<p>Demo of the ember-youtube component.</p>
+<p><strong>This is a demonstration of the ember-youtube component.</strong></p>
 
-<p>You can control the component directly from the controller by target the component in your actions. Try changing the YouTube ID or tap the buttons below.</p>
+<p>You'll see that it's possible to control the player with custom controls. See the <a href="https://github.com/oskarrough/ember-youtube">repository</a> for more information.</p>
 
-<p>{{input value=youTubeId}}</p>
-<p>Volume : {{input value=volume}}</p>
+<hr>
 
-<menu>
+<p>Try changing the values below:</p>
+
+<section>
+	YouTube ID: {{input value=youTubeId}}<br>
+Volume: {{input value=volume}}
+</section>
+
+<p>You can play, pause, mute and unmute the component from the surrounding controller:</p>
+
+<section>
 	<button {{action "togglePlay" target=myPlayer}}>
 		{{#if myPlayer.isPlaying}}Pause{{else}}Play{{/if}}
 	</button>
 	<button {{action "toggleVolume" target=myPlayer}}>
 		{{#if myPlayer.isMuted}}Unmute{{else}}Mute{{/if}}
 	</button>
-</menu>
+</section>
 
-<h2>components/ember-youtube</h2>
-<div>{{myPlayer.currentTimeFormatted}} / {{myPlayer.durationFormatted}}</div>
-{{ember-youtube
+<p>You can format current time and duration with Moment.js:</p>
+
+<section>
+	{{myPlayer.currentTimeFormatted}}/{{myPlayer.durationFormatted}}
+</section>
+
+<p>Everything above is the template and controller. Below is the component itself:</p>
+
+<section>
+	{{ember-youtube
 	ytid=youTubeId
 	autoplay=true
 	volume=volume
@@ -37,5 +52,6 @@
 	playing="ytPlaying"
 	paused="ytPaused"
 	ended="ytEnded"}}
+</section>
 
 {{outlet}}
