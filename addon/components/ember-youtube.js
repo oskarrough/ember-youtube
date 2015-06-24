@@ -63,20 +63,32 @@ export default Ember.Component.extend({
 		this.playerVars.autoplay = this.get('autoplay') ? 1 : 0;
 	})),
 
-	// Load the iframe player API asynchronously from YouTube
-	loadApi: on('init', function() {
-		let tag = document.createElement('script');
-		let firstTag = document.getElementsByTagName('script')[0];
-
-		tag.src = "https://www.youtube.com/iframe_api";
-		firstTag.parentNode.insertBefore(tag, firstTag);
-
-		// YouTube callback when API is ready
-		window.onYouTubePlayerAPIReady = function() {
-			if (this.get('showDebug')) { debug('yt player api ready'); }
+	// Did insert element hook
+	didInsertElement: function() {
+		// check if YouTube API is already available
+		if (typeof YT === "undefined") {
+			var _this = this;
+			// load the api script and call createPlayer when API is ready
+			Ember.$.getScript("https://www.youtube.com/iframe_api").then(function(){
+				window.onYouTubePlayerAPIReady = _this.createPlayer.bind(_this);
+			});
+		} else {
 			this.createPlayer();
-		}.bind(this);
-	}),
+		}
+	},
+
+	// clean up when element will be destroyed.
+	willDestroyElement: function() {
+		// clear the timer
+		this.stopTimer();
+
+		// destroy video player
+		var player = this.get('player');
+		if (player) {
+			player.destroy();
+			this.set('player', null);
+		}
+	},
 
 	isPlaying: computed('playerState', function() {
 		let player = this.get('player');
@@ -86,7 +98,6 @@ export default Ember.Component.extend({
 	}),
 
 	createPlayer: function() {
-		let _this = this;
 		let playerVars = this.get('playerVars');
 		let $iframe = this.$('#EmberYoutube-player');
 
@@ -95,9 +106,9 @@ export default Ember.Component.extend({
 			height: 270,
 			playerVars: playerVars,
 			events: {
-				'onReady': _this.onPlayerReady.bind(_this),
-				'onStateChange': _this.onPlayerStateChange.bind(_this),
-				'onError': _this.onPlayerError.bind(_this)
+				'onReady': this.onPlayerReady.bind(this),
+				'onStateChange': this.onPlayerStateChange.bind(this),
+				'onError': this.onPlayerError.bind(this)
 			}
 		});
 
@@ -190,8 +201,13 @@ export default Ember.Component.extend({
 	startTimer: function() {
 		let player = this.get('player');
 
-		this.set('currentTime', player.getCurrentTime());
-		this.set('duration', player.getDuration());
+		this.setProperties({
+			'currentTime' : player.getCurrentTime(),
+			'duration' : player.getDuration()
+		});
+
+		// stop any previously started timer we forgot to clear
+		this.stopTimer();
 
 		// every 60ms, update current time
 		let timer = window.setInterval(function() {
@@ -216,7 +232,7 @@ export default Ember.Component.extend({
 		let time = this.get('currentTime');
 		let format = this.get('currentTimeFormat');
 		if (!time || !format) { return; }
-		let duration = moment.duration(time, 'seconds');		
+		let duration = moment.duration(time, 'seconds');
 		return duration.format(format);
 	}),
 
@@ -231,7 +247,7 @@ export default Ember.Component.extend({
 		let time = this.get('duration');
 		let format = this.get('durationFormat');
 		if (!time || !format) { return; }
-		let duration = moment.duration(time, 'seconds');		
+		let duration = moment.duration(time, 'seconds');
 		return duration.format(format);
 	}),
 
