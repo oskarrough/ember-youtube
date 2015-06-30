@@ -2,7 +2,7 @@
 import Ember from 'ember';
 
 const { computed, debug, observer, on, run } = Ember;
-var moment = window.moment;
+const moment = window.moment;
 
 export default Ember.Component.extend({
 	classNames: ['EmberYoutube'],
@@ -48,13 +48,12 @@ export default Ember.Component.extend({
 
 	// Make the component available to the outside world
 	_register: on('init', function() {
-		run.schedule('afterRender', this, function() {
-			if (this.get('delegate')) {
-				if (this.get('showDebug')) { debug('delegating'); }
-				if (this.get('showDebug')) { debug(this.get('delegate')); }
-				if (this.get('showDebug')) { debug(this); }
-				this.get('delegate').set(this.get('delegate-as') || "emberYoutubePlayer", this);
-			}
+		const delegate = this.get('delegate');
+		const delegateAs = this.get('delegate-as');
+
+		run.schedule('afterRender', () => {
+			if (!delegate) { return; }
+			delegate.set(delegateAs || "emberYoutubePlayer", this);
 		});
 	}),
 
@@ -64,21 +63,21 @@ export default Ember.Component.extend({
 	})),
 
 	// Did insert element hook
-	didInsertElement: function() {
+	loadAndCreatePlayer: on('didInsertElement', function() {
 		// check if YouTube API is already available
 		if (typeof YT === "undefined") {
-			var _this = this;
+			var self = this;
 			// load the api script and call createPlayer when API is ready
-			Ember.$.getScript("https://www.youtube.com/iframe_api").then(function(){
-				window.onYouTubePlayerAPIReady = _this.createPlayer.bind(_this);
+			Ember.$.getScript("https://www.youtube.com/iframe_api").then(() => {
+				window.onYouTubePlayerAPIReady = self.createPlayer.bind(this);
 			});
 		} else {
 			this.createPlayer();
 		}
-	},
+	}),
 
 	// clean up when element will be destroyed.
-	willDestroyElement: function() {
+	willDestroyElement() {
 		// clear the timer
 		this.stopTimer();
 
@@ -97,7 +96,7 @@ export default Ember.Component.extend({
 		return player.getPlayerState() === YT.PlayerState.PLAYING;
 	}),
 
-	createPlayer: function() {
+	createPlayer() {
 		let playerVars = this.get('playerVars');
 		let $iframe = this.$('#EmberYoutube-player');
 
@@ -199,8 +198,10 @@ export default Ember.Component.extend({
 	},
 
 	startTimer: function() {
-		let player = this.get('player');
+		const player = this.get('player');
+		const interval = 1000;
 
+		// set initial times
 		this.setProperties({
 			'currentTime' : player.getCurrentTime(),
 			'duration' : player.getDuration()
@@ -209,11 +210,12 @@ export default Ember.Component.extend({
 		// stop any previously started timer we forgot to clear
 		this.stopTimer();
 
-		// every 60ms, update current time
+		// every second update current time
 		let timer = window.setInterval(function() {
 			this.set('currentTime', player.getCurrentTime());
-		}.bind(this), 60);
+		}.bind(this), interval);
 
+		// save the timer so we can stop it later
 		this.set('timer', timer);
 	},
 
@@ -223,8 +225,8 @@ export default Ember.Component.extend({
 
 	// avoids 'undefined' value for the <progress> element
 	currentTimeValue: computed('currentTime', function() {
-		let value = this.get('currentTime');
-		return value ? value : 0;
+		let time = this.get('currentTime');
+		return time ? time : 0;
 	}),
 
 	// returns a momentJS formated date based on "currentTimeFormat" property
@@ -238,21 +240,24 @@ export default Ember.Component.extend({
 
 	// avoids 'undefined' value for the <progress> element
 	durationValue: computed('duration', function() {
-		let value = this.get('duration');
-		return value ? value : 0;
+		let duration = this.get('duration');
+		return duration ? duration : 0;
 	}),
 
 	// returns a momentJS formated date based on "durationFormat" property
 	durationFormatted: computed('duration', 'durationFormat', function() {
-		let time = this.get('duration');
+		let duration = this.get('duration');
 		let format = this.get('durationFormat');
-		if (!time || !format) { return; }
-		let duration = moment.duration(time, 'seconds');
-		return duration.format(format);
+
+		if (!duration || !format) { return; }
+
+		let time = moment.duration(duration, 'seconds');
+
+		return time.format(format);
 	}),
 
 	// OK, this is really stupid but couldn't access the "event" inside
-	// an ember action so here do a manual click handler instead
+	// an ember action so here's a manual click handler instead
 	progressBarClick: on('didInsertElement', function() {
 		let self = this;
 
