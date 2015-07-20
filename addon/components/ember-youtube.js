@@ -9,8 +9,6 @@ export default Ember.Component.extend({
 	ytid: null,
 	player: null,
 	playerState: 'loading',
-	isMuted: false,
-	volume: 100,
 	showControls: false,
 	showTime: false,
 	showProgress: false,
@@ -18,6 +16,9 @@ export default Ember.Component.extend({
 	autoplay: 0,
 	currentTimeFormat: "mm:ss",
 	durationFormat: "mm:ss",
+	startSeconds: undefined,
+	endSeconds: undefined,
+	suggestedQuality: undefined,
 
 	// from YT.PlayerState
 	stateNames: {
@@ -89,11 +90,37 @@ export default Ember.Component.extend({
 		}
 	},
 
-	isPlaying: computed('playerState', function() {
-		let player = this.get('player');
-		if (!player || this.get('playerState') === 'loading') { return false; }
+	isMuted: computed({
+		get: function() {
+			return this.get('player').isMuted();
+		}, set: function(name, muted) {
+			if (muted) {
+				this.send('mute');
+			} else {
+				this.send('unMute');
+			}
+		}
+	}),
 
-		return player.getPlayerState() === YT.PlayerState.PLAYING;
+	isPlaying: computed('playerState', {
+		get: function() {
+			let player = this.get('player');
+			if (!player || this.get('playerState') === 'loading') { return false; }
+
+			return player.getPlayerState() !== YT.PlayerState.PAUSED;
+		},
+		set: function(name, playing) {
+			let player = this.get('player');
+			if (!player || this.get('playerState') === 'loading') { return; }
+			let state = player.getPlayerState();
+			if (state !== YT.PlayerState.PLAYING && state !== YT.PlayerState.PAUSED) { return; }
+
+			if (playing) {
+				this.send('play');
+			} else {
+				this.send('pause');
+			}
+		}
 	}),
 
 	createPlayer() {
@@ -133,26 +160,36 @@ export default Ember.Component.extend({
 			return;
 		}
 
+		let options = {
+			'videoId': id,
+			'startSeconds': this.get('startSeconds'),
+			'endSeconds': this.get('endSeconds'),
+			'suggestedQuality': this.get('suggestedQuality')
+		};
+
 		if (this.playerVars.autoplay) {
-			player.loadVideoById(id);
+			player.loadVideoById(options);
 		} else {
-			player.cueVideoById(id);
+			player.cueVideoById(options);
 		}
 	}),
 
-	onVolumeChange: observer('volume', function() {
-		let volume = this.get('volume');
-
-		// keep values between 0 and 100
-		if (volume > 100) {
-			this.set('volume', 100);
-		} else if (volume < 0) {
-			this.set('volume', 0);
+	volume: computed({
+		get: function() {
+			return this.get('player').getVolume();
+		}, set: function(name, volume) {
+			// Clamp between 0 and 100
+			if (volume > 100) {
+				volume = 100;
+			} else if (volume < 0) {
+				volume = 0;
+			}
+			let player = this.get('player');
+			if (player) {
+				this.get('player').setVolume(volume);
+			}
 		}
-
-		// set it on the player
-		this.get('player').setVolume(volume);
-	 }),
+	}),
 
 	// called by YouTube
 	onPlayerStateChange: function(event) {
@@ -275,29 +312,19 @@ export default Ember.Component.extend({
 	}),
 
 	actions: {
-		load: function() { this.get('player').loadVideo(); },
-		play: function() { this.get('player').playVideo(); },
-		pause: function() { this.get('player').pauseVideo(); },
-		mute: function() { this.get('player').mute(); },
-		unMute: function() { this.get('player').unMute(); },
+		load: function() { this.get('player') && this.get('player').loadVideo(); },
+		play: function() { this.get('player') && this.get('player').playVideo(); },
+		pause: function() { this.get('player') && this.get('player').pauseVideo(); },
+		mute: function() { this.get('player') && this.get('player').mute(); },
+		unMute: function() { this.get('player') && this.get('player').unMute(); },
 		togglePlay: function() {
-			if (this.get('isPlaying')) {
-				this.send('pause');
-			} else {
-				this.send('play');
-			}
+			this.toggleProperty('isPlaying');
 		},
 		toggleVolume: function() {
-			let player = this.get('player');
 			this.toggleProperty('isMuted');
-			if (player.isMuted()) {
-				this.send('unMute');
-			} else {
-				this.send('mute');
-			}
 		},
 		seekTo(ms) {
-			this.get('player').seekTo(ms);
+			this.get('player') && this.get('player').seekTo(ms);
 		},
 
 		// youtube events
