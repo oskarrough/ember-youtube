@@ -58,16 +58,18 @@ export default Ember.Component.extend({
 		});
 	}),
 
-	// update autoplay from true/false to 1/0 which yt api needs
+	// update autoplay from true/false to 1/0 which the YouTube api needs
 	setAutoplay: on('init', observer('autoplay', function() {
 		this.playerVars.autoplay = this.get('autoplay') ? 1 : 0;
 	})),
 
 	// Did insert element hook
 	loadAndCreatePlayer: on('didInsertElement', function() {
+
 		// check if YouTube API is already available
 		if (typeof YT === "undefined") {
 			var self = this;
+
 			// load the api script and call createPlayer when API is ready
 			Ember.$.getScript("https://www.youtube.com/iframe_api").then(() => {
 				window.onYouTubePlayerAPIReady = self.createPlayer.bind(this);
@@ -77,23 +79,11 @@ export default Ember.Component.extend({
 		}
 	}),
 
-	// clean up when element will be destroyed.
-	willDestroyElement() {
-		// clear the timer
-		this.stopTimer();
-
-		// destroy video player
-		var player = this.get('player');
-		if (player) {
-			player.destroy();
-			this.set('player', null);
-		}
-	},
-
 	isMuted: computed({
 		get: function() {
 			return this.get('player').isMuted();
-		}, set: function(name, muted) {
+		},
+		set: function(name, muted) {
 			if (muted) {
 				this.send('mute');
 			} else {
@@ -310,6 +300,20 @@ export default Ember.Component.extend({
 			self.send('seekTo', clickedValue);
 		});
 	}),
+
+	// clean up when element will be destroyed.
+	willDestroyElement() {
+
+		// clear the timer
+		this.stopTimer();
+
+		// destroy video player
+		var player = this.get('player');
+		if (player) {
+			player.destroy();
+			this.set('player', null);
+		}
+	},
 
 	actions: {
 		load: function() { this.get('player') && this.get('player').loadVideo(); },
