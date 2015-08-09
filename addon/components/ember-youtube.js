@@ -166,23 +166,27 @@ export default Ember.Component.extend({
 	volume: computed({
 		get: function() {
 			return this.get('player').getVolume();
-		}, set: function(name, volume) {
+		},
+		set: function(name, volume) {
+			let player = this.get('player');
+
 			// Clamp between 0 and 100
 			if (volume > 100) {
 				volume = 100;
 			} else if (volume < 0) {
 				volume = 0;
 			}
-			let player = this.get('player');
+
 			if (player) {
-				this.get('player').setVolume(volume);
+				player.setVolume(volume);
 			}
 		}
 	}),
 
 	// called by YouTube
 	onPlayerStateChange: function(event) {
-		// Get a readable state name
+
+		// Set a readable state name
 		let state = this.get('stateNames.' + event.data.toString());
 		this.set('playerState', state);
 
@@ -315,31 +319,21 @@ export default Ember.Component.extend({
 	},
 
 	actions: {
-		load: function() { this.get('player') && this.get('player').loadVideo(); },
-		play: function() { this.get('player') && this.get('player').playVideo(); },
-		pause: function() { this.get('player') && this.get('player').pauseVideo(); },
-		mute: function() { this.get('player') && this.get('player').mute(); },
-		unMute: function() { this.get('player') && this.get('player').unMute(); },
-		togglePlay: function() {
-			this.toggleProperty('isPlaying');
-		},
-		toggleVolume: function() {
-			this.toggleProperty('isMuted');
-		},
-		seekTo(ms) {
-			this.get('player') && this.get('player').seekTo(ms);
-		},
+		load() { this.get('player') && this.get('player').loadVideo(); },
+		play() { this.get('player') && this.get('player').playVideo(); },
+		pause() { this.get('player') && this.get('player').pauseVideo(); },
+		mute() { this.get('player') && this.get('player').mute(); },
+		unMute() { this.get('player') && this.get('player').unMute(); },
+		togglePlay() { this.toggleProperty('isPlaying'); },
+		toggleVolume() { this.toggleProperty('isMuted'); },
+		seekTo(ms) { this.get('player') && this.get('player').seekTo(ms); },
 
 		// youtube events
-		ready: function() {},
-		ended: function() {},
-		playing: function() {
-			this.startTimer();
-		},
-		paused: function() {
-			this.stopTimer();
-		},
-		buffering: function() {},
-		queued: function() {},
+		ready() {},
+		ended() {},
+		playing() { this.startTimer(); },
+		paused() { this.stopTimer(); },
+		buffering() {},
+		queued() {},
 	}
 });

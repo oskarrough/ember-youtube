@@ -15,10 +15,10 @@
 
 <section>
 	<button {{action "togglePlay" target=myPlayer}}>
-		{{#if myPlayer.isPlaying}}Pause{{else}}Play{{/if}}
+		{{if myPlayer.isPlaying 'Pause' 'Play'}}
 	</button>
 	<button {{action "toggleVolume" target=myPlayer}}>
-		{{#if myPlayer.isMuted}}Unmute{{else}}Mute{{/if}}
+		{{if myPlayer.isMuted 'Unmute' 'Mute'}}
 	</button>
 </section>
 
@@ -31,9 +31,8 @@
 <p>Everything above is the template and controller. Below is the component itself:</p>
 
 <section>
-	{{ember-youtube
-	ytid=youTubeId
-	autoplay=true
+	{{ember-youtube ytid=youTubeId
+	autoplay=false
 	volume=volume
 
 	showControls=false
