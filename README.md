@@ -1,8 +1,33 @@
 # ember-youtube
 
-A simple Ember.js component to play and control single YouTube videos using the iframe API. It will autoplay as soon as you pass a YouTube ID.
+A simple Ember.js component to play and control YouTube videos using the iframe API. Pass it a YouTube video ID and you're good to go! You can see a demonstration at [ember-youtube.surge.sh](http://ember-youtube.surge.sh).
 
-See a demonstration at http://ember-youtube.surge.sh.
+Every day this component is being battle-tested on [Radio4000](http://radio4000.com) and although I haven't been able to write any tests yet, it works!
+
+## Features
+
+- Full support for all YouTube player events (and errors)
+- Custom (external) controls (make your own buttons)
+- Custom time properties (for instance "4:31 / 7:58") formatted with Moment.js
+- Custom progress bar in full sync with the YouTube player
+
+## Quick start
+
+Inside your Ember CLI project run:
+
+```bash
+ember install ember-youtube
+```
+
+If you are using Ember CLI 0.1.5 - 0.2.2, please use `ember install:addon ember-youtube` instead. If you're not using Ember CLI you're on your own, sorry.
+
+Now you have access to the `ember-youtube` component in all your templates. Only the `ytid` property is required.
+
+```hbs
+{{ember-youtube ytid=youTubeId autoplay=true}}
+```
+
+Beautiful, no? Here's another example showcasing all options. You can also see the component file directly: [addon/components/ember-youtube.js](https://github.com/oskarrough/ember-youtube/blob/master/addon/components/ember-youtube.js).
 
 ```hbs
 {{ember-youtube
@@ -23,38 +48,6 @@ See a demonstration at http://ember-youtube.surge.sh.
 	ended="ytEnded"
 	buffering="ytBuffering"}}
 ```
-
-## Features
-
-- Full support for all YouTube player events
-- External controls (make your own buttons)
-- Custom time properties (for instance "4:31 / 7:58") formatted with Moment.js
-- Custom progress bar in full sync with the YouTube player
-- Error handling
-
-## Installation
-
-Inside your ember-cli project run:
-
-```bash
-ember install ember-youtube
-```
-
-For ember-cli 0.1.5 - 0.2.2, please use:
-
-```bash
-ember install:addon ember-youtube
-```
-
-## Usage
-
-As it's an ember addon everything will be merged into your application which means you'll be able to do this immediately:
-
-```hbs
-{{ember-youtube ytid=youTubeId autoplay=true}}
-```
-
-Beautiful, no? All available settings are in the example at the top of this file. You can also see the component file directly: [addon/components/ember-youtube.js](https://github.com/oskarrough/ember-youtube/blob/master/addon/components/ember-youtube.js).
 
 ## External controls
 
