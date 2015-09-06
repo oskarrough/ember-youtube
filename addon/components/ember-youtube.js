@@ -65,18 +65,17 @@ export default Ember.Component.extend({
 
 	// Did insert element hook
 	loadAndCreatePlayer: on('didInsertElement', function() {
-
-		// check if YouTube API is already available
-		if (typeof YT === "undefined") {
-			var self = this;
-
-			// load the api script and call createPlayer when API is ready
-			Ember.$.getScript("https://www.youtube.com/iframe_api").then(() => {
-				window.onYouTubePlayerAPIReady = self.createPlayer.bind(this);
+    if (!window._youtubePlayerAPIReadyPromise) {
+      var deferred = Ember.RSVP.defer();
+      Ember.$.getScript("https://www.youtube.com/iframe_api").then(() => {
+				window.onYouTubePlayerAPIReady = deferred.resolve;
 			});
-		} else {
+      window._youtubePlayerAPIReadyPromise = deferred.promise;
+    }
+
+    window._youtubePlayerAPIReadyPromise.then(() => {
 			this.createPlayer();
-		}
+    });
 	}),
 
 	isMuted: computed({
