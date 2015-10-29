@@ -19,6 +19,8 @@ export default Ember.Component.extend({
 	startSeconds: undefined,
 	endSeconds: undefined,
 	suggestedQuality: undefined,
+        height: 360,
+        width: 270,
 
 	// from YT.PlayerState
 	stateNames: {
@@ -117,8 +119,8 @@ export default Ember.Component.extend({
 		let $iframe = this.$('#EmberYoutube-player');
 
 		let player = new YT.Player($iframe[0], {
-			width: 360,
-			height: 270,
+			width: this.get('width'),
+			height: this.get('height'),
 			playerVars: playerVars,
 			events: {
 				'onReady': this.onPlayerReady.bind(this),
