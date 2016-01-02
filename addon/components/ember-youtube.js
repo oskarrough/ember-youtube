@@ -321,14 +321,42 @@ export default Ember.Component.extend({
 	},
 
 	actions: {
-		load() { this.get('player') && this.get('player').loadVideo(); },
-		play() { this.get('player') && this.get('player').playVideo(); },
-		pause() { this.get('player') && this.get('player').pauseVideo(); },
-		mute() { this.get('player') && this.get('player').mute(); },
-		unMute() { this.get('player') && this.get('player').unMute(); },
-		togglePlay() { this.toggleProperty('isPlaying'); },
-		toggleVolume() { this.toggleProperty('isMuted'); },
-		seekTo(ms) { this.get('player') && this.get('player').seekTo(ms); },
+		load() {
+			if (this.get('player')) {
+				this.get('player').loadVideo();
+			}
+		},
+		play() {
+			if (this.get('player')) {
+				this.get('player').playVideo();
+			}
+		},
+		pause() {
+			if (this.get('player')) {
+				this.get('player').pauseVideo();
+			}
+		},
+		mute() {
+			if (this.get('player')) {
+				this.get('player').mute();
+			}
+		},
+		unMute() {
+			if (this.get('player')) {
+				this.get('player').unMute();
+			}
+		},
+		togglePlay() {
+			this.toggleProperty('isPlaying');
+		},
+		toggleVolume() {
+			this.toggleProperty('isMuted');
+		},
+		seekTo(seconds) {
+			if (this.get('player')) {
+				this.get('player').seekTo(seconds);
+			}
+		},
 
 		// youtube events
 		ready() {},

@@ -14,18 +14,21 @@
 <p>You can play, pause, mute and unmute the component from the surrounding controller:</p>
 
 <section>
-	<button {{action "togglePlay" target=myPlayer}}>
-		{{if myPlayer.isPlaying 'Pause' 'Play'}}
+	<button {{action "togglePlay" target=emberYoutube}}>
+		{{if emberYoutube.isPlaying 'Pause' 'Play'}}
 	</button>
-	<button {{action "toggleVolume" target=myPlayer}}>
-		{{if myPlayer.isMuted 'Unmute' 'Mute'}}
+	<button {{action "toggleVolume" target=emberYoutube}}>
+		{{if emberYoutube.isMuted 'Unmute' 'Mute'}}
+	</button>
+	<button {{action "seekTo" 90 target=emberYoutube}}>
+		Seek to 01:30
 	</button>
 </section>
 
 <p>You can format current time and duration with Moment.js:</p>
 
 <section>
-	{{myPlayer.currentTimeFormatted}}/{{myPlayer.durationFormatted}}
+	{{emberYoutube.currentTimeFormatted}}/{{emberYoutube.durationFormatted}}
 </section>
 
 <p>Everything above is the template and controller. Below is the component itself:</p>
@@ -40,8 +43,8 @@
 	showProgress=true
 	showDebug=true
 
-	delegate=controller
-	delegate-as="myPlayer"
+	delegate=this
+	delegate-as="emberYoutube"
 
 	currentTimeFormat="mm:ss"
 	durationFormat="mm:ss"

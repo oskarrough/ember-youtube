@@ -40,8 +40,8 @@ Beautiful, no? Here's another example showcasing all options. You can also see t
 	showProgress=false
 	showDebug=false
 
-	delegate=controller
-	delegate-as="myPlayer"
+	delegate=this
+	delegate-as="emberYoutube"
 
 	playing="ytPlaying"
 	paused="ytPaused"
@@ -58,7 +58,7 @@ If you want your own buttons, you need to do two things:
 They expose the component and give you a target for your actions. Like this:
 
 ```hbs
-{{ember-youtube ytid=youTubeId delegate=controller delegate-as="myPlayer"}}
+{{ember-youtube ytid=youTubeId delegate=controller delegate-as="emberYoutube"}}
 ```
 
 2) Specify a target on your actions
@@ -68,21 +68,30 @@ Now, and because we used `delegate` and `delegate-as`, you actually have complet
 But it allows you to do this in the template where you include the player:
 
 ```hbs
-<button {{action "togglePlay" target=myPlayer}}>
-	{{#if myPlayer.isPlaying}}Pause{{else}}Play{{/if}}
+<button {{action "togglePlay" target=emberYoutube}}>
+	{{#if emberYoutube.isPlaying}}Pause{{else}}Play{{/if}}
 </button>
 <button {{action "toggleVolume" target="emberYoutube"}}>
-	{{#if myPlayer.isMuted}}Unmute{{else}}Mute{{/if}}
+	{{#if emberYoutube.isMuted}}Unmute{{else}}Mute{{/if}}
 </button>
 ```
 
 You can also do this:
 
 ```hbs
-<button {{action "play" target=myPlayer}}>Play</button>
-<button {{action "pause" target=myPlayer}}>Pause</button>
-<button {{action "mute" target=myPlayer}}>Mute</button>
-<button {{action "unMute" target=myPlayer}}>Unmute</button>
+<button {{action "play" target=emberYoutube}}>Play</button>
+<button {{action "pause" target=emberYoutube}}>Pause</button>
+<button {{action "mute" target=emberYoutube}}>Mute</button>
+<button {{action "unMute" target=emberYoutube}}>Unmute</button>
+```
+
+## Seeking
+
+Here's an example of how to seek to a certain time in a video. It accepts a number of seconds.
+
+```hbs
+<button {{action "seekTo" 90 target=emberYoutube}}>Seek to 01:30</button>
+{{ember-youtube ytid="fZ7MhTRmJ60" delegate=this delegate-as="emberYoutube"}}
 ```
 
 ## Events
