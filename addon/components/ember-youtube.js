@@ -82,7 +82,7 @@ export default Ember.Component.extend({
 
 	isMuted: computed({
 		get: function() {
-			return this.get('player').isMuted();
+			return this.get('player') && this.get('player').isMuted();
 		},
 		set: function(name, muted) {
 			if (muted) {
