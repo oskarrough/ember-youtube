@@ -88,11 +88,9 @@ export default Ember.Component.extend({
 			// The API will call this function when the API has finished downloading.
 			window.onYouTubeIframeAPIReady = () => {
 				if (previous) {
-					console.log('previous!');
 					previous();
 				}
 
-				console.log('resolving');
 				resolve(window.YT);
 			};
 		});
@@ -181,7 +179,6 @@ export default Ember.Component.extend({
 				return false;
 			}
 
-			console.log('state: ' + player.getPlayerState());
 			return player.getPlayerState() === 1;
 		},
 		set(name, paused) {
@@ -189,7 +186,6 @@ export default Ember.Component.extend({
 
 			// Stop without player or when loading.
 			if (!player || this.get('playerState') === 'loading') {
-				console.log('no');
 				return;
 			}
 
@@ -225,6 +221,9 @@ export default Ember.Component.extend({
 			endSeconds,
 			suggestedQuality
 		};
+
+		// Check mute status and set it.
+		this.set('isMuted', player.isMuted());
 
 		// Either load or cue depending on `autoplay`
 		if (this.playerVars.autoplay) {
