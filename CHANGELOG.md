@@ -1,6 +1,6 @@
 # Changelog for ember-youtube
 
-### 0.4.5
+### 0.5.0
 
 Fixed issues with playback and volume not being properly 'set' and 'get'. Loading of the YouTube API should be a bit faster.
 
