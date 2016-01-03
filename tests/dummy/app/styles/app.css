@@ -4,9 +4,13 @@ html {
 body {
 	margin: 2rem;
 }
-
 section {
 	display: block;
 	padding: 1rem;
 	margin-bottom: 1rem;
+}
+
+#EmberYoutube-player {
+	width: 480px;
+	max-width: 100%;
 }

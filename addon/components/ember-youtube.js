@@ -1,7 +1,7 @@
-/*global YT*/
+/* global YT, window */
 import Ember from 'ember';
 
-const { computed, debug, observer, on, run } = Ember;
+const {computed, debug, observer, on, run} = Ember;
 const moment = window.moment;
 
 export default Ember.Component.extend({
@@ -14,13 +14,13 @@ export default Ember.Component.extend({
 	showProgress: false,
 	showDebug: false,
 	autoplay: 0,
-	currentTimeFormat: "mm:ss",
-	durationFormat: "mm:ss",
+	currentTimeFormat: 'mm:ss',
+	durationFormat: 'mm:ss',
 	startSeconds: undefined,
 	endSeconds: undefined,
 	suggestedQuality: undefined,
-        height: 360,
-        width: 270,
+	height: 360,
+	width: 270,
 
 	// from YT.PlayerState
 	stateNames: {
@@ -33,8 +33,8 @@ export default Ember.Component.extend({
 	},
 
 	// YouTube's embedded player can take a number of optional parameters.
-	// Full list here: https://developers.google.com/youtube/player_parameters#Parameters
-	// demo: https://developers.google.com/youtube/youtube_player_demo
+	// https://developers.google.com/youtube/player_parameters#Parameters
+	// https://developers.google.com/youtube/youtube_player_demo
 	playerVars: {
 		autoplay: 0,
 		controls: 1,
@@ -42,26 +42,30 @@ export default Ember.Component.extend({
 		rel: 0, // disable related videos
 		showinfo: 0,
 		autohide: 1,
-		fs: 0, // disable fullscreen button
+		// Disable fullscreen button
+		fs: 0,
+		// Allow inline playback on iOS.
 		playsinline: 1
 		// disablekb: 1,
 		// iv_load_policy: 3,
 		// modestbranding: 1,
 	},
 
-	// Make the component available to the outside world
-	_register: on('init', function() {
+	// Expose the component to the outside world.
+	_register: on('init', function () {
 		const delegate = this.get('delegate');
 		const delegateAs = this.get('delegate-as');
 
 		run.schedule('afterRender', () => {
-			if (!delegate) { return; }
-			delegate.set(delegateAs || "emberYoutubePlayer", this);
+			if (!delegate) {
+				return;
+			}
+			delegate.set(delegateAs || 'emberYoutubePlayer', this);
 		});
 	}),
 
-	// update autoplay from true/false to 1/0 which the YouTube api needs
-	setAutoplay: on('init', observer('autoplay', function() {
+	// Because the YT API expects a 1/0 format instead of true/false.
+	setAutoplay: on('init', observer('autoplay', function () {
 		this.playerVars.autoplay = this.get('autoplay') ? 1 : 0;
 	})),
 
@@ -115,13 +119,15 @@ export default Ember.Component.extend({
 	}),
 
 	createPlayer() {
-		let playerVars = this.get('playerVars');
-		let $iframe = this.$('#EmberYoutube-player');
+		const $iframe = this.$('#EmberYoutube-player');
+		const playerVars = this.get('playerVars');
+		const width = this.get('width');
+		const height = this.get('height');
 
 		let player = new YT.Player($iframe[0], {
-			width: this.get('width'),
-			height: this.get('height'),
-			playerVars: playerVars,
+			width,
+			height,
+			playerVars,
 			events: {
 				'onReady': this.onPlayerReady.bind(this),
 				'onStateChange': this.onPlayerStateChange.bind(this),
@@ -130,11 +136,10 @@ export default Ember.Component.extend({
 		});
 
 		this.set('player', player);
-		window.emberYouTubePlayer = player; // to access it outside ember
 	},
 
-	// called by the YouTube API
-	onPlayerReady: function() {
+	// Gets called by the YouTube player.
+	onPlayerReady() {
 		this.set('playerState', 'ready');
 		this.loadVideo();
 	},
@@ -184,15 +189,15 @@ export default Ember.Component.extend({
 			}
 		}
 	}),
-
-	// called by YouTube
-	onPlayerStateChange: function(event) {
-
+	// Gets called by the YouTube player.
+	onPlayerStateChange(event) {
 		// Set a readable state name
 		let state = this.get('stateNames.' + event.data.toString());
 		this.set('playerState', state);
 
-		if (this.get('showDebug')) { debug(state); }
+		if (this.get('showDebug')) {
+			debug(state);
+		}
 
 		// send actions outside
 		this.sendAction(state);
@@ -201,27 +206,27 @@ export default Ember.Component.extend({
 		this.send(state);
 	},
 
-	// called by the API
-	onPlayerError: function(event) {
+	// Gets called by the YouTube player.
+	onPlayerError(event) {
 		let errorCode = event.data;
 		this.set('playerState', 'error');
 
-		Ember.warn('error' + errorCode);
+		Ember.debug('error' + errorCode);
 
 		// Send the event to the controller
 		this.sendAction('error', errorCode);
 
 		// switch(errorCode) {
 		// 	case 2:
-		// 		Ember.warn('Invalid parameter');
+		// 		Ember.debug('Invalid parameter');
 		// 		break;
 		// 	case 100:
-		// 		Ember.warn('Not found/private');
+		// 		Ember.debug('Not found/private');
 		// 		this.send('playNext');
 		// 		break;
 		// 	case 101:
 		// 	case 150:
-		// 		Ember.warn('Embed not allowed');
+		// 		Ember.debug('Embed not allowed');
 		// 		this.send('playNext');
 		// 		break;
 		// 	default:
@@ -243,7 +248,7 @@ export default Ember.Component.extend({
 		this.stopTimer();
 
 		// every second update current time
-		let timer = window.setInterval(function() {
+		let timer = window.setInterval(function () {
 			this.set('currentTime', player.getCurrentTime());
 		}.bind(this), interval);
 
@@ -251,18 +256,18 @@ export default Ember.Component.extend({
 		this.set('timer', timer);
 	},
 
-	stopTimer: function() {
+	stopTimer: function () {
 		window.clearInterval(this.get('timer'));
 	},
 
 	// avoids 'undefined' value for the <progress> element
-	currentTimeValue: computed('currentTime', function() {
+	currentTimeValue: computed('currentTime', function () {
 		let time = this.get('currentTime');
 		return time ? time : 0;
 	}),
 
 	// returns a momentJS formated date based on "currentTimeFormat" property
-	currentTimeFormatted: computed('currentTime', 'currentTimeFormat', function() {
+	currentTimeFormatted: computed('currentTime', 'currentTimeFormat', function () {
 		let time = this.get('currentTime');
 		let format = this.get('currentTimeFormat');
 		if (!time || !format) { return; }
@@ -271,13 +276,13 @@ export default Ember.Component.extend({
 	}),
 
 	// avoids 'undefined' value for the <progress> element
-	durationValue: computed('duration', function() {
+	durationValue: computed('duration', function () {
 		let duration = this.get('duration');
 		return duration ? duration : 0;
 	}),
 
 	// returns a momentJS formated date based on "durationFormat" property
-	durationFormatted: computed('duration', 'durationFormat', function() {
+	durationFormatted: computed('duration', 'durationFormat', function () {
 		let duration = this.get('duration');
 		let format = this.get('durationFormat');
 
@@ -290,7 +295,7 @@ export default Ember.Component.extend({
 
 	// OK, this is really stupid but couldn't access the "event" inside
 	// an ember action so here's a manual click handler instead
-	progressBarClick: on('didInsertElement', function() {
+	progressBarClick: on('didInsertElement', function () {
 		let self = this;
 
 		this.$().on('click', 'progress', function(event) {
@@ -308,7 +313,6 @@ export default Ember.Component.extend({
 
 	// clean up when element will be destroyed.
 	willDestroyElement() {
-
 		// clear the timer
 		this.stopTimer();
 
@@ -321,11 +325,6 @@ export default Ember.Component.extend({
 	},
 
 	actions: {
-		load() {
-			if (this.get('player')) {
-				this.get('player').loadVideo();
-			}
-		},
 		play() {
 			if (this.get('player')) {
 				this.get('player').playVideo();
@@ -361,9 +360,13 @@ export default Ember.Component.extend({
 		// youtube events
 		ready() {},
 		ended() {},
-		playing() { this.startTimer(); },
-		paused() { this.stopTimer(); },
+		playing() {
+			this.startTimer();
+		},
+		paused() {
+			this.stopTimer();
+		},
 		buffering() {},
-		queued() {},
+		queued() {}
 	}
 });
