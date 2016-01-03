@@ -69,54 +69,38 @@ export default Ember.Component.extend({
 		this.playerVars.autoplay = this.get('autoplay') ? 1 : 0;
 	})),
 
-	// Did insert element hook
-	loadAndCreatePlayer: on('didInsertElement', function() {
-    if (!window._youtubePlayerAPIReadyPromise) {
-      var deferred = Ember.RSVP.defer();
-      Ember.$.getScript("https://www.youtube.com/iframe_api").then(() => {
-				window.onYouTubePlayerAPIReady = deferred.resolve;
+	loadAndCreatePlayer: on('didInsertElement', function () {
+		this.loadYouTubeIframeAPI().then(() => {
+			// Wait a tick to avoid janky performance.
+			Ember.run.schedule('afterRender', this, function () {
+				this.createPlayer();
 			});
-      window._youtubePlayerAPIReadyPromise = deferred.promise;
-    }
-
-    window._youtubePlayerAPIReadyPromise.then(() => {
-			this.createPlayer();
-    });
+		});
 	}),
 
-	isMuted: computed({
-		get: function() {
-			return this.get('player') && this.get('player').isMuted();
-		},
-		set: function(name, muted) {
-			if (muted) {
-				this.send('mute');
-			} else {
-				this.send('unMute');
-			}
-		}
-	}),
+	// Returns a promise that is resolved when the API is loaded.
+	loadYouTubeIframeAPI() {
+		let iframeAPIReady;
 
-	isPlaying: computed('playerState', {
-		get: function() {
-			let player = this.get('player');
-			if (!player || this.get('playerState') === 'loading') { return false; }
+		iframeAPIReady = new Ember.RSVP.Promise(resolve => {
+			let previous = window.onYouTubeIframeAPIReady;
 
-			return player.getPlayerState() !== YT.PlayerState.PAUSED;
-		},
-		set: function(name, playing) {
-			let player = this.get('player');
-			if (!player || this.get('playerState') === 'loading') { return; }
-			let state = player.getPlayerState();
-			if (state !== YT.PlayerState.PLAYING && state !== YT.PlayerState.PAUSED) { return; }
+			// The API will call this function when the API has finished downloading.
+			window.onYouTubeIframeAPIReady = () => {
+				if (previous) {
+					console.log('previous!');
+					previous();
+				}
 
-			if (playing) {
-				this.send('play');
-			} else {
-				this.send('pause');
-			}
-		}
-	}),
+				console.log('resolving');
+				resolve(window.YT);
+			};
+		});
+
+		Ember.$.getScript('https://www.youtube.com/iframe_api');
+
+		return iframeAPIReady;
+	},
 
 	createPlayer() {
 		const $iframe = this.$('#EmberYoutube-player');
@@ -144,51 +128,6 @@ export default Ember.Component.extend({
 		this.loadVideo();
 	},
 
-	// Load (and plays) a video every time ytid changes
-	loadVideo: observer('ytid', function() {
-		let id = this.get('ytid');
-		let player = this.get('player');
-
-		// make sure we have access to the functions we need
-		// otherwise the player might die
-		if (!id || !player.loadVideoById || !player.cueVideoById) {
-			if (this.get('showDebug')) { debug('no id'); }
-			return;
-		}
-
-		let options = {
-			'videoId': id,
-			'startSeconds': this.get('startSeconds'),
-			'endSeconds': this.get('endSeconds'),
-			'suggestedQuality': this.get('suggestedQuality')
-		};
-
-		if (this.playerVars.autoplay) {
-			player.loadVideoById(options);
-		} else {
-			player.cueVideoById(options);
-		}
-	}),
-
-	volume: computed({
-		get: function() {
-			return this.get('player').getVolume();
-		},
-		set: function(name, volume) {
-			let player = this.get('player');
-
-			// Clamp between 0 and 100
-			if (volume > 100) {
-				volume = 100;
-			} else if (volume < 0) {
-				volume = 0;
-			}
-
-			if (player) {
-				player.setVolume(volume);
-			}
-		}
-	}),
 	// Gets called by the YouTube player.
 	onPlayerStateChange(event) {
 		// Set a readable state name
@@ -234,7 +173,88 @@ export default Ember.Component.extend({
 		// }
 	},
 
-	startTimer: function() {
+	isPlaying: computed('playerState', {
+		get() {
+			const player = this.get('player');
+
+			if (!player || this.get('playerState') === 'loading') {
+				return false;
+			}
+
+			console.log('state: ' + player.getPlayerState());
+			return player.getPlayerState() === 1;
+		},
+		set(name, paused) {
+			const player = this.get('player');
+
+			// Stop without player or when loading.
+			if (!player || this.get('playerState') === 'loading') {
+				console.log('no');
+				return;
+			}
+
+			if (paused) {
+				this.send('play');
+			} else {
+				this.send('pause');
+			}
+		}
+	}),
+
+	// Load (and plays) a video every time ytid changes
+	loadVideo: observer('ytid', function () {
+		const player = this.get('player');
+		const videoId = this.get('ytid');
+		const startSeconds = this.get('startSeconds');
+		const endSeconds = this.get('endSeconds');
+		const suggestedQuality = this.get('suggestedQuality');
+
+		// Make sure we have access to the functions we need
+		// otherwise the player might die
+		if (!videoId || !player.loadVideoById || !player.cueVideoById) {
+			if (this.get('showDebug')) {
+				debug('no id');
+			}
+			return;
+		}
+
+		// Set parameters for the video to be played.
+		let options = {
+			videoId,
+			startSeconds,
+			endSeconds,
+			suggestedQuality
+		};
+
+		// Either load or cue depending on `autoplay`
+		if (this.playerVars.autoplay) {
+			player.loadVideoById(options);
+		} else {
+			player.cueVideoById(options);
+		}
+	}),
+
+	volume: computed({
+		get: function () {
+			return this.get('player').getVolume();
+		},
+		set: function (name, volume) {
+			let player = this.get('player');
+
+			// Clamp between 0 and 100
+			if (volume > 100) {
+				volume = 100;
+			} else if (volume < 0) {
+				volume = 0;
+			}
+
+			if (player) {
+				player.setVolume(volume);
+			}
+		}
+	}),
+
+	startTimer: function () {
 		const player = this.get('player');
 		const interval = 1000;
 
@@ -335,21 +355,27 @@ export default Ember.Component.extend({
 				this.get('player').pauseVideo();
 			}
 		},
+		togglePlay() {
+			this.toggleProperty('isPlaying');
+		},
 		mute() {
 			if (this.get('player')) {
 				this.get('player').mute();
+				this.set('isMuted', true);
 			}
 		},
 		unMute() {
 			if (this.get('player')) {
 				this.get('player').unMute();
+				this.set('isMuted', false);
 			}
 		},
-		togglePlay() {
-			this.toggleProperty('isPlaying');
-		},
 		toggleVolume() {
-			this.toggleProperty('isMuted');
+			if (this.get('player').isMuted()) {
+				this.send('unMute');
+			} else {
+				this.send('mute');
+			}
 		},
 		seekTo(seconds) {
 			if (this.get('player')) {
