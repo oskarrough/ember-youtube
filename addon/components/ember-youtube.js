@@ -83,16 +83,23 @@ export default Ember.Component.extend({
 		let iframeAPIReady;
 
 		iframeAPIReady = new Ember.RSVP.Promise(resolve => {
-			let previous = window.onYouTubeIframeAPIReady;
 
-			// The API will call this function when the API has finished downloading.
-			window.onYouTubeIframeAPIReady = () => {
-				if (previous) {
-					previous();
-				}
-
+			if (window.YT && window.YT.loaded) {
+				// The promise will be resolved immediately if YT API was loaded already
 				resolve(window.YT);
-			};
+			} else {
+				let previous = window.onYouTubeIframeAPIReady;
+
+				// The API will call this function when the API has finished downloading.
+				window.onYouTubeIframeAPIReady = () => {
+					if (previous) {
+						previous();
+					}
+
+					resolve(window.YT);
+				};
+			}
+
 		});
 
 		Ember.$.getScript('https://www.youtube.com/iframe_api');
