@@ -1,18 +1,19 @@
 <div id="EmberYoutube-player"></div>
 
 <div class="EmberYoutube-controls">
-
 	{{#if showControls}}
-	<menu class="EmberYoutube-controls">
-		<button {{action 'togglePlay'}}>{{#if isPlaying}}Pause{{else}}Play{{/if}}</button>
-		<button {{action 'toggleVolume'}}>{{#if isMuted}}Unmute{{else}}Mute{{/if}}</button>
-	</menu>
+		<menu class="EmberYoutube-controls">
+			<button {{action 'togglePlay'}}>{{#if isPlaying}}Pause{{else}}Play{{/if}}</button>
+			<button {{action 'toggleVolume'}}>{{#if isMuted}}Unmute{{else}}Mute{{/if}}</button>
+		</menu>
 	{{/if}}
 
 	{{#if showTime}}
-		<p class="EmberYoutube-time">
-			{{currentTimeFormatted}}/{{durationFormatted}}
-		</p>
+		{{#if durationFormatted}}
+			<p class="EmberYoutube-time">
+				{{currentTimeFormatted}}/{{durationFormatted}}
+			</p>
+		{{/if}}
 	{{/if}}
 
 	{{#if showProgress}}
@@ -33,6 +34,8 @@
 	{{/if}}
 </div>
 
-<div class="EmberYoutube-yield">
-	{{yield}}
-</div>
+{{#if hasBlock}}
+	<div class="EmberYoutube-yield">
+		{{yield}}
+	</div>
+{{/if}}

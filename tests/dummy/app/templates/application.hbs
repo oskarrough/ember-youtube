@@ -27,9 +27,11 @@
 
 <p>You can format current time and duration with Moment.js:</p>
 
-<section>
-	{{emberYoutube.currentTimeFormatted}}/{{emberYoutube.durationFormatted}}
-</section>
+{{#if emberYoutube.durationFormatted}}
+	<section>
+		{{emberYoutube.currentTimeFormatted}}/{{emberYoutube.durationFormatted}}
+	</section>
+{{/if}}
 
 <p>Everything above is the template and controller. Below is the component itself:</p>
 
