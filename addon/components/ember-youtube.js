@@ -32,23 +32,25 @@ export default Ember.Component.extend({
 		5: 'queued'			// YT.PlayerState.CUED
 	},
 
-	// YouTube's embedded player can take a number of optional parameters.
-	// https://developers.google.com/youtube/player_parameters#Parameters
-	// https://developers.google.com/youtube/youtube_player_demo
-	playerVars: {
-		autoplay: 0,
-		controls: 1,
-		enablejsapi: 1,
-		rel: 0, // disable related videos
-		showinfo: 0,
-		autohide: 1,
-		// Disable fullscreen button
-		fs: 0,
-		// Allow inline playback on iOS.
-		playsinline: 1
-		// disablekb: 1,
-		// iv_load_policy: 3,
-		// modestbranding: 1,
+
+	init() {
+		this._super();
+
+		// YouTube's embedded player can take a number of optional parameters.
+		// https://developers.google.com/youtube/player_parameters#Parameters
+		// https://developers.google.com/youtube/youtube_player_demo
+		this.set("playerVars", {
+			autoplay: 0,
+			controls: 1,
+			enablejsapi: 1,
+			rel: 0, // disable related videos
+			showinfo: 0,
+			autohide: 1,
+			// Disable fullscreen button
+			fs: 0,
+			// Allow inline playback on iOS.
+			playsinline: 1
+		});
 	},
 
 	// Expose the component to the outside world.
