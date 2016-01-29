@@ -4,6 +4,7 @@
 
 <hr>
 
+<h3>Custom controls</h3>
 <p>Try changing the values below:</p>
 
 <section>
@@ -25,7 +26,7 @@
 	</button>
 </section>
 
-<p>You can format current time and duration with Moment.js:</p>
+<p>You can format current time and duration with Moment.js.</p>
 
 {{#if emberYoutube.durationFormatted}}
 	<section>
@@ -33,9 +34,10 @@
 	</section>
 {{/if}}
 
-<p>Everything above is the template and controller. Below is the component itself:</p>
+<hr>
 
 <section>
+	<h3>The player</h3>
 	{{ember-youtube ytid=youTubeId
 	autoplay=false
 	volume=volume
@@ -55,5 +57,8 @@
 	paused="ytPaused"
 	ended="ytEnded"}}
 </section>
+
+<p>Multiple players on the same route are supported as well.</p>
+{{ember-youtube ytid="NEFrNP-BLcI"}}
 
 {{outlet}}

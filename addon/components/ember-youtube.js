@@ -32,14 +32,13 @@ export default Ember.Component.extend({
 		5: 'queued'			// YT.PlayerState.CUED
 	},
 
-
 	init() {
 		this._super();
 
 		// YouTube's embedded player can take a number of optional parameters.
 		// https://developers.google.com/youtube/player_parameters#Parameters
 		// https://developers.google.com/youtube/youtube_player_demo
-		this.set("playerVars", {
+		this.set('playerVars', {
 			autoplay: 0,
 			controls: 1,
 			enablejsapi: 1,
@@ -85,7 +84,6 @@ export default Ember.Component.extend({
 		let iframeAPIReady;
 
 		iframeAPIReady = new Ember.RSVP.Promise(resolve => {
-
 			if (window.YT && window.YT.loaded) {
 				// The promise will be resolved immediately if YT API was loaded already
 				resolve(window.YT);
@@ -101,7 +99,6 @@ export default Ember.Component.extend({
 					resolve(window.YT);
 				};
 			}
-
 		});
 
 		Ember.$.getScript('https://www.youtube.com/iframe_api');
@@ -120,9 +117,9 @@ export default Ember.Component.extend({
 			height,
 			playerVars,
 			events: {
-				'onReady': this.onPlayerReady.bind(this),
-				'onStateChange': this.onPlayerStateChange.bind(this),
-				'onError': this.onPlayerError.bind(this)
+				onReady: this.onPlayerReady.bind(this),
+				onStateChange: this.onPlayerStateChange.bind(this),
+				onError: this.onPlayerError.bind(this)
 			}
 		});
 
@@ -268,8 +265,8 @@ export default Ember.Component.extend({
 
 		// set initial times
 		this.setProperties({
-			'currentTime' : player.getCurrentTime(),
-			'duration' : player.getDuration()
+			currentTime: player.getCurrentTime(),
+			duration: player.getDuration()
 		});
 
 		// stop any previously started timer we forgot to clear
@@ -298,7 +295,9 @@ export default Ember.Component.extend({
 	currentTimeFormatted: computed('currentTime', 'currentTimeFormat', function () {
 		let time = this.get('currentTime');
 		let format = this.get('currentTimeFormat');
-		if (!time || !format) { return; }
+		if (!time || !format) {
+			return null;
+		}
 		let duration = moment.duration(time, 'seconds');
 		return duration.format(format);
 	}),
@@ -314,7 +313,9 @@ export default Ember.Component.extend({
 		let duration = this.get('duration');
 		let format = this.get('durationFormat');
 
-		if (!duration || !format) { return; }
+		if (!duration || !format) {
+			return null;
+		}
 
 		let time = moment.duration(duration, 'seconds');
 
@@ -326,8 +327,7 @@ export default Ember.Component.extend({
 	progressBarClick: on('didInsertElement', function () {
 		let self = this;
 
-		this.$().on('click', 'progress', function(event) {
-
+		this.$().on('click', 'progress', function (event) {
 			// get the x position of the click inside our progress el
 			let x = event.pageX - Ember.$(this).position().left;
 
