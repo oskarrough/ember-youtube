@@ -1,5 +1,6 @@
 /* global YT, window */
 import Ember from 'ember';
+import moment from 'moment';
 
 const {computed, debug, observer, on, run} = Ember;
 
