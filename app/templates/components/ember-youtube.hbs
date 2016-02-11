@@ -8,14 +8,6 @@
 		</menu>
 	{{/if}}
 
-	{{#if showTime}}
-		{{#if durationFormatted}}
-			<p class="EmberYoutube-time">
-				{{currentTimeFormatted}}/{{durationFormatted}}
-			</p>
-		{{/if}}
-	{{/if}}
-
 	{{#if showProgress}}
 		<p class="EmberYoutube-progress">
 			<progress value={{currentTimeValue}} max={{durationValue}}></progress>
