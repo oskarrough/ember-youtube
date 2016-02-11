@@ -2,7 +2,6 @@
 import Ember from 'ember';
 
 const {computed, debug, observer, on, run} = Ember;
-const moment = window.moment;
 
 export default Ember.Component.extend({
 	classNames: ['EmberYoutube'],
@@ -10,12 +9,9 @@ export default Ember.Component.extend({
 	player: null,
 	playerState: 'loading',
 	showControls: false,
-	showTime: false,
 	showProgress: false,
 	showDebug: false,
 	autoplay: 0,
-	currentTimeFormat: 'mm:ss',
-	durationFormat: 'mm:ss',
 	startSeconds: undefined,
 	endSeconds: undefined,
 	suggestedQuality: undefined,
@@ -291,35 +287,10 @@ export default Ember.Component.extend({
 		return time ? time : 0;
 	}),
 
-	// returns a momentJS formated date based on "currentTimeFormat" property
-	currentTimeFormatted: computed('currentTime', 'currentTimeFormat', function () {
-		let time = this.get('currentTime');
-		let format = this.get('currentTimeFormat');
-		if (!time || !format) {
-			return null;
-		}
-		let duration = moment.duration(time, 'seconds');
-		return duration.format(format);
-	}),
-
 	// avoids 'undefined' value for the <progress> element
 	durationValue: computed('duration', function () {
 		let duration = this.get('duration');
 		return duration ? duration : 0;
-	}),
-
-	// returns a momentJS formated date based on "durationFormat" property
-	durationFormatted: computed('duration', 'durationFormat', function () {
-		let duration = this.get('duration');
-		let format = this.get('durationFormat');
-
-		if (!duration || !format) {
-			return null;
-		}
-
-		let time = moment.duration(duration, 'seconds');
-
-		return time.format(format);
 	}),
 
 	// OK, this is really stupid but couldn't access the "event" inside

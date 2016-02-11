@@ -26,13 +26,6 @@
 	</button>
 </section>
 
-<p>You can format current time and duration with Moment.js.</p>
-
-{{#if emberYoutube.durationFormatted}}
-	<section>
-		{{emberYoutube.currentTimeFormatted}}/{{emberYoutube.durationFormatted}}
-	</section>
-{{/if}}
 
 <hr>
 
@@ -43,15 +36,11 @@
 	volume=volume
 
 	showControls=false
-	showTime=true
 	showProgress=true
 	showDebug=true
 
 	delegate=this
 	delegate-as="emberYoutube"
-
-	currentTimeFormat="mm:ss"
-	durationFormat="mm:ss"
 
 	playing="ytPlaying"
 	paused="ytPaused"
