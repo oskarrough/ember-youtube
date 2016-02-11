@@ -123,6 +123,55 @@ actions: {
   }
 }
 ```
+## Custom timestamps
+
+You could create custom timestamps if you need. Let's write a component, that implement formatted timestamps. There is a template of the component:
+
+```hbs
+{{ember-youtube ytid=youTubeId delegate=this delegate-as="emberYoutube"}}
+
+// custom timestamp
+<p class="EmberYoutube-time">
+	{{currentTimeFormatted}}/{{durationFormatted}}
+</p>
+```	
+It's JS implementation of the component:
+
+```javascript
+export default Ember.Component.extend({
+	currentTimeFormat: 'mm:ss',
+	durationFormat: 'mm:ss',
+	
+	// returns a momentJS formated date based on "currentTimeFormat" property
+	currentTimeFormatted: computed('emberYoutube.currentTime', 'currentTimeFormat', function () {
+		let time = this.get('emberYoutube.currentTime');
+		let format = this.get('currentTimeFormat');
+		if (!time || !format) {
+			return null;
+		}
+		
+		// note: you must have moment.js and moment-duration-format 
+		// to make the example works
+		let duration = moment.duration(time, 'seconds');
+		
+		return duration.format(format);
+	}),
+	
+	// returns a momentJS formated date based on "durationFormat" property
+	durationFormatted: computed('emberYoutube.duration', 'durationFormat', function () {
+		let duration = this.get('emberYoutube.duration');
+		let format = this.get('durationFormat');
+	
+		if (!duration || !format) {
+			return null;
+		}
+	
+		let time = moment.duration(duration, 'seconds');
+	
+		return time.format(format);
+	})
+});
+```
 
 ## Autoplay on iOS
 
