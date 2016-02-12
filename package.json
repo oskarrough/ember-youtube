@@ -9,7 +9,8 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server",
-    "test": "ember try:testall"
+    "test": "ember try:testall",
+    "deploy-demo": "ember build --envrionment=production; mv dist/index.html dist/200.html; surge dist ember-youtube.surge.sh"
   },
   "repository": "https://github.com/oskarrough/ember-youtube",
   "engines": {
