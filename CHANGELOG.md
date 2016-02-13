@@ -1,5 +1,9 @@
 # Changelog for ember-youtube
 
+### 0.5.3
+
+Extracted custom timestamps from ember-youtube to slim the addon. Check the readme for instructions on how to do it yourself.
+
 ### 0.5.0
 
 Fixed issues with playback and volume not being properly 'set' and 'get'. Loading of the YouTube API should be a bit faster.

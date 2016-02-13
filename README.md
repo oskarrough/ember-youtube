@@ -125,7 +125,7 @@ actions: {
 ```
 ## Custom timestamps
 
-You could create custom timestamps if you need. Let's write a component, that implement formatted timestamps. There is a template of the component:
+Let's write a component with two custom formatted timestamps such as "13:37". First make sure moment and moment-duration-format are installed. Then create a new component with the following template:
 
 ```hbs
 {{ember-youtube ytid=youTubeId delegate=this delegate-as="emberYoutube"}}
@@ -134,14 +134,15 @@ You could create custom timestamps if you need. Let's write a component, that im
 <p class="EmberYoutube-time">
 	{{currentTimeFormatted}}/{{durationFormatted}}
 </p>
-```	
-It's JS implementation of the component:
+```
+
+And here's the JavaScript part of the component:
 
 ```javascript
 export default Ember.Component.extend({
 	currentTimeFormat: 'mm:ss',
 	durationFormat: 'mm:ss',
-	
+
 	// returns a momentJS formated date based on "currentTimeFormat" property
 	currentTimeFormatted: computed('emberYoutube.currentTime', 'currentTimeFormat', function () {
 		let time = this.get('emberYoutube.currentTime');
@@ -149,25 +150,23 @@ export default Ember.Component.extend({
 		if (!time || !format) {
 			return null;
 		}
-		
-		// note: you must have moment.js and moment-duration-format 
-		// to make the example works
+
 		let duration = moment.duration(time, 'seconds');
-		
+
 		return duration.format(format);
 	}),
-	
+
 	// returns a momentJS formated date based on "durationFormat" property
 	durationFormatted: computed('emberYoutube.duration', 'durationFormat', function () {
 		let duration = this.get('emberYoutube.duration');
 		let format = this.get('durationFormat');
-	
+
 		if (!duration || !format) {
 			return null;
 		}
-	
+
 		let time = moment.duration(duration, 'seconds');
-	
+
 		return time.format(format);
 	})
 });
