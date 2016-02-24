@@ -17,6 +17,7 @@ export default Ember.Component.extend({
 	suggestedQuality: undefined,
 	height: 360,
 	width: 270,
+	fs: 0,
 
 	// from YT.PlayerState
 	stateNames: {
@@ -41,8 +42,7 @@ export default Ember.Component.extend({
 			rel: 0, // disable related videos
 			showinfo: 0,
 			autohide: 1,
-			// Disable fullscreen button
-			fs: 0,
+			fs: this.get('fs'),
 			// Allow inline playback on iOS.
 			playsinline: 1
 		});
