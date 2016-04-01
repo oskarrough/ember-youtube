@@ -11,13 +11,17 @@ export default Ember.Component.extend({
 	showControls: false,
 	showProgress: false,
 	showDebug: false,
-	autoplay: 0,
+
+	// YouTube's embedded player can take a number of optional parameters.
+	// https://developers.google.com/youtube/player_parameters#Parameters
+	// https://developers.google.com/youtube/youtube_player_demo
+	playerVars: {},
+
 	startSeconds: undefined,
 	endSeconds: undefined,
 	suggestedQuality: undefined,
 	height: 360,
 	width: 270,
-	fs: 0,
 
 	// from YT.PlayerState
 	stateNames: {
@@ -29,30 +33,10 @@ export default Ember.Component.extend({
 		5: 'queued'			// YT.PlayerState.CUED
 	},
 
-	init() {
-		this._super();
-
-		// YouTube's embedded player can take a number of optional parameters.
-		// https://developers.google.com/youtube/player_parameters#Parameters
-		// https://developers.google.com/youtube/youtube_player_demo
-		this.set('playerVars', {
-			autoplay: 0,
-			controls: 1,
-			enablejsapi: 1,
-			rel: 0, // disable related videos
-			showinfo: 0,
-			autohide: 1,
-			fs: this.get('fs'),
-			// Allow inline playback on iOS.
-			playsinline: 1
-		});
-	},
-
 	// Expose the component to the outside world.
 	_register: on('init', function () {
 		const delegate = this.get('delegate');
 		const delegateAs = this.get('delegate-as');
-
 		run.schedule('afterRender', () => {
 			if (!delegate) {
 				return;
@@ -60,11 +44,6 @@ export default Ember.Component.extend({
 			delegate.set(delegateAs || 'emberYoutubePlayer', this);
 		});
 	}),
-
-	// Because the YT API expects a 1/0 format instead of true/false.
-	setAutoplay: on('init', observer('autoplay', function () {
-		this.playerVars.autoplay = this.get('autoplay') ? 1 : 0;
-	})),
 
 	loadAndCreatePlayer: on('didInsertElement', function () {
 		this.loadYouTubeIframeAPI().then(() => {

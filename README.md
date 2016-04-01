@@ -24,7 +24,7 @@ If you are using Ember CLI 0.1.5 - 0.2.2, please use `ember install:addon ember-
 Now you have access to the `ember-youtube` component in all your templates. Only the `ytid` property is required.
 
 ```hbs
-{{ember-youtube ytid=youTubeId autoplay=true}}
+{{ember-youtube ytid=youTubeId}}
 ```
 
 Beautiful, no? Here's another example showcasing all options. You can also see the component file directly: [addon/components/ember-youtube.js](https://github.com/oskarrough/ember-youtube/blob/master/addon/components/ember-youtube.js).
@@ -32,7 +32,6 @@ Beautiful, no? Here's another example showcasing all options. You can also see t
 ```hbs
 {{ember-youtube
 	ytid="fZ7MhTRmJ60"
-	autoplay=true
 	volume=100
 
 	showControls=false
@@ -47,6 +46,22 @@ Beautiful, no? Here's another example showcasing all options. You can also see t
 	paused="ytPaused"
 	ended="ytEnded"
 	buffering="ytBuffering"}}
+```
+
+## YouTube player options
+
+To define the [playerVars](https://developers.google.com/youtube/player_parameters) of the embed itself, you can pass `playerVars` object to the component. Here's an example:
+
+```javascript
+// controller.js
+playerVars: {
+	autoplay: 1,
+	showinfo: 0
+}
+```
+
+```hbs
+{{ember-youtube ytid="fZ7MhTRmJ60" playerVars=playerVars}}
 ```
 
 ## External controls

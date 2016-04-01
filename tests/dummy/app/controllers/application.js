@@ -2,6 +2,13 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
 	youTubeId: 'fZ7MhTRmJ60', // NEFrNP-BLcI
+
+	customPlayerVars: {
+		autoplay: 1,
+		rel: 0, // disable related videos
+		showinfo: 0 // hide uploader info
+	},
+
 	volume: 100,
 	actions: {
 		ytPlaying() {
