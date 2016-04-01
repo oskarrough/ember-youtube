@@ -138,6 +138,7 @@ actions: {
   }
 }
 ```
+
 ## Custom timestamps
 
 Let's write a component with two custom formatted timestamps such as "13:37". First make sure moment and moment-duration-format are installed. Then create a new component with the following template:

@@ -64,13 +64,11 @@ export default Ember.Component.extend({
 				resolve(window.YT);
 			} else {
 				let previous = window.onYouTubeIframeAPIReady;
-
 				// The API will call this function when the API has finished downloading.
 				window.onYouTubeIframeAPIReady = () => {
 					if (previous) {
 						previous();
 					}
-
 					resolve(window.YT);
 				};
 			}
@@ -86,7 +84,6 @@ export default Ember.Component.extend({
 		const playerVars = this.get('playerVars');
 		const width = this.get('width');
 		const height = this.get('height');
-
 		let player = new YT.Player($iframe[0], {
 			width,
 			height,
@@ -220,14 +217,12 @@ export default Ember.Component.extend({
 		},
 		set: function (name, volume) {
 			let player = this.get('player');
-
 			// Clamp between 0 and 100
 			if (volume > 100) {
 				volume = 100;
 			} else if (volume < 0) {
 				volume = 0;
 			}
-
 			if (player) {
 				player.setVolume(volume);
 			}
@@ -276,14 +271,11 @@ export default Ember.Component.extend({
 	// an ember action so here's a manual click handler instead
 	progressBarClick: on('didInsertElement', function () {
 		let self = this;
-
 		this.$().on('click', 'progress', function (event) {
 			// get the x position of the click inside our progress el
 			let x = event.pageX - Ember.$(this).position().left;
-
 			// convert it to a value relative to the duration (max)
 			let clickedValue = x * this.max / this.offsetWidth;
-
 			// 250 = 0.25 seconds into player
 			self.send('seekTo', clickedValue);
 		});
@@ -293,7 +285,6 @@ export default Ember.Component.extend({
 	willDestroyElement() {
 		// clear the timer
 		this.stopTimer();
-
 		// destroy video player
 		var player = this.get('player');
 		if (player) {
@@ -340,7 +331,6 @@ export default Ember.Component.extend({
 				this.get('player').seekTo(seconds);
 			}
 		},
-
 		// youtube events
 		ready() {},
 		ended() {},

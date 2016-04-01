@@ -26,25 +26,24 @@
 	</button>
 </section>
 
-
 <hr>
 
 <section>
 	<h3>The player</h3>
 	{{ember-youtube ytid=youTubeId
-	volume=volume
+		volume=volume
 		playerVars=customPlayerVars
 
-	showControls=false
-	showProgress=true
-	showDebug=true
+		showControls=false
+		showProgress=true
+		showDebug=true
 
-	delegate=this
-	delegate-as="emberYoutube"
+		delegate=this
+		delegate-as="emberYoutube"
 
-	playing="ytPlaying"
-	paused="ytPaused"
-	ended="ytEnded"}}
+		playing="ytPlaying"
+		paused="ytPaused"
+		ended="ytEnded"}}
 </section>
 
 <p>Multiple players on the same route are supported as well.</p>
