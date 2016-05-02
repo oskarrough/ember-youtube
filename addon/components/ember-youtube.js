@@ -46,7 +46,9 @@ export default Ember.Component.extend({
 	}),
 
 	loadAndCreatePlayer: on('didInsertElement', function () {
+		debug('didInsertElement: loadAndCreatePlayer');
 		this.loadYouTubeIframeAPI().then(() => {
+			debug('after loadYouTubeIframeAPI');
 			// Wait a tick to avoid janky performance.
 			Ember.run.schedule('afterRender', this, function () {
 				this.createPlayer();
@@ -57,14 +59,15 @@ export default Ember.Component.extend({
 	// Returns a promise that is resolved when the API is loaded.
 	loadYouTubeIframeAPI() {
 		let iframeAPIReady;
+		debug('loadYouTubeIframeAPI');
 
 		iframeAPIReady = new Ember.RSVP.Promise(resolve => {
 			if (window.YT && window.YT.loaded) {
-				// The promise will be resolved immediately if YT API was loaded already
+				// If already loaded, resolve immediately.
 				resolve(window.YT);
 			} else {
 				let previous = window.onYouTubeIframeAPIReady;
-				// The API will call this function when the API has finished downloading.
+				// The API will call this function once the API has finished downloading.
 				window.onYouTubeIframeAPIReady = () => {
 					if (previous) {
 						previous();
@@ -74,17 +77,25 @@ export default Ember.Component.extend({
 			}
 		});
 
-		Ember.$.getScript('https://www.youtube.com/iframe_api');
+		Ember.$.getScript('https://www.youtube.com/iframe_api').then(() => {
+			debug('got iframe script');
+		});
 
 		return iframeAPIReady;
 	},
 
 	createPlayer() {
-		const $iframe = this.$('#EmberYoutube-player');
 		const playerVars = this.get('playerVars');
 		const width = this.get('width');
 		const height = this.get('height');
-		let player = new YT.Player($iframe[0], {
+		const $iframe = this.$('#EmberYoutube-player');
+		debug('createPlayer');
+		if (!$iframe) {
+			// throw new Error(`The YouTube API iframe wasn't inserted yet`);
+			console.log('no iframe');
+			return;
+		}
+		let player = new YT.Player($iframe.get(0), {
 			width,
 			height,
 			playerVars,
@@ -152,21 +163,17 @@ export default Ember.Component.extend({
 	isPlaying: computed('playerState', {
 		get() {
 			const player = this.get('player');
-
 			if (!player || this.get('playerState') === 'loading') {
 				return false;
 			}
-
 			return player.getPlayerState() === 1;
 		},
 		set(name, paused) {
 			const player = this.get('player');
-
 			// Stop without player or when loading.
 			if (!player || this.get('playerState') === 'loading') {
 				return;
 			}
-
 			if (paused) {
 				this.send('play');
 			} else {
