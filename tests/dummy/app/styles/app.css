@@ -1,9 +1,11 @@
 html {
 	font-family: Georgia;
 }
+
 body {
 	margin: 2rem;
 }
+
 section {
 	display: block;
 	padding: 1rem;

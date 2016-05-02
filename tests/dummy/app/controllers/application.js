@@ -2,6 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
 	youTubeId: 'fZ7MhTRmJ60', // NEFrNP-BLcI
+	volume: 100,
 
 	customPlayerVars: {
 		autoplay: 1,
@@ -9,7 +10,6 @@ export default Ember.Controller.extend({
 		showinfo: 0 // hide uploader info
 	},
 
-	volume: 100,
 	actions: {
 		ytPlaying() {
 			Ember.debug('on playing from controller');
