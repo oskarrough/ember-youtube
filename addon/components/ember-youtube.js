@@ -83,7 +83,7 @@ export default Ember.Component.extend({
 		const width = this.get('width');
 		const height = this.get('height');
 		const $iframe = this.$('#EmberYoutube-player');
-		if (!$iframe) {
+		if (!$iframe || !this.onPlayerReady) {
 			// The YouTube API iframe wasn't inserted yet
 			Ember.debug('Sorry, some async stuff went wrong. Could use your help: https://github.com/oskarrough/ember-youtube');
 			return;

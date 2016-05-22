@@ -1,7 +1,8 @@
+import Ember from 'ember';
 import {moduleForComponent, test} from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('ember-youtube-hehe', 'Integration | Component | ember youtube hehe', {
+moduleForComponent('ember-youtube', 'Integration | Component | ember youtube', {
 	integration: true
 });
 
@@ -23,12 +24,17 @@ test('it renders', function (assert) {
 	assert.equal(this.$('.EmberYoutube-yield').text().trim(), 'template block text', 'yield is wrapped in an extra <div>');
 });
 
-test('it can show controls', function (assert) {
-	this.render(hbs`{{ember-youtube showControls=true}}`);
+test('it can show and remove controls', function (assert) {
+	assert.expect(3);
+	this.set('controls', true);
+	this.render(hbs`{{ember-youtube showControls=controls}}`);
+	assert.ok(this.$('.EmberYoutube-controls button').length);
 	assert.equal(this.$('.EmberYoutube-controls button').eq(0).text().trim(), 'Play');
+	this.set('controls', false);
+	assert.notOk(this.$('.EmberYoutube-controls button').length);
 });
 
-test('it can show progress', function (assert) {
+test('it can show and hide progress', function (assert) {
 	assert.expect(2);
 	this.set('progress', false);
 	this.render(hbs`{{ember-youtube showProgress=progress}}`);
@@ -37,33 +43,14 @@ test('it can show progress', function (assert) {
 	assert.equal(this.$('.EmberYoutube-progress').length, 1, 'Progress can be shown');
 });
 
-// test('it can play', function (assert) {
-//   this.set('youtubeId', 'NEFrNP-BLcI');
-//   this.render(hbs`{{ember-youtube showDebug=true ytid=youtubeId}}`);
-
-//   console.log(this.$()[0]);
-//   assert.equal(this.get('ytid'), 'NEFrNP-BLcI', 'ytid works');
-//   // return wait().then(() => {
-//   //   assert.equal(this.$('iframe').length, 1);
-//   //   // assert.equal(this.$('.result').length, 2, 'two results rendered');
-//   // });
-// });
-
-// {{ember-youtube ytid=youTubeId
-//   volume=volume
-//   playerVars=customPlayerVars
-//
-//   showControls=false
-//   showProgress=true
-//   showDebug=true
-//
-//   delegate=this
-//   delegate-as="emberYoutube"
-//
-//   playing="ytPlaying"
-//   paused="ytPaused"
-//   ended="ytEnded"}}
-// </section>
-//
-// <p>Multiple players on the same route are supported as well.</p>
-// {{ember-youtube ytid="NEFrNP-BLcI"}}
+test('it has an iframe', function (assert) {
+	const done = assert.async();
+	this.set('youtubeVideoId', 'fZ7MhTRmJ60');
+	this.render(hbs`{{ember-youtube ytid=youtubeVideoId}}`);
+	// It takes some time before the youtube api is loaded,
+	// how do we avoid the timeout?
+	Ember.run.later(this, function () {
+		assert.ok(this.$('iframe').length);
+		done();
+	}, 1000);
+});
