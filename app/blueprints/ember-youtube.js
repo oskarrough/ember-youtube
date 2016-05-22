@@ -1,1 +1,1 @@
-export { default } from 'ember-youtube/blueprints/ember-youtube';
+export {default} from 'ember-youtube/blueprints/ember-youtube';

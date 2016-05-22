@@ -85,6 +85,7 @@ export default Ember.Component.extend({
 		const $iframe = this.$('#EmberYoutube-player');
 		if (!$iframe) {
 			// The YouTube API iframe wasn't inserted yet
+			Ember.debug('Sorry, some async stuff went wrong. Could use your help: https://github.com/oskarrough/ember-youtube');
 			return;
 		}
 		let player = new YT.Player($iframe.get(0), {
