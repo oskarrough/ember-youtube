@@ -46,9 +46,7 @@ export default Ember.Component.extend({
 	}),
 
 	loadAndCreatePlayer: on('didInsertElement', function () {
-		debug('didInsertElement: loadAndCreatePlayer');
 		this.loadYouTubeIframeAPI().then(() => {
-			debug('after loadYouTubeIframeAPI');
 			// Wait a tick to avoid janky performance.
 			Ember.run.schedule('afterRender', this, function () {
 				this.createPlayer();
@@ -59,8 +57,6 @@ export default Ember.Component.extend({
 	// Returns a promise that is resolved when the API is loaded.
 	loadYouTubeIframeAPI() {
 		let iframeAPIReady;
-		debug('loadYouTubeIframeAPI');
-
 		iframeAPIReady = new Ember.RSVP.Promise(resolve => {
 			if (window.YT && window.YT.loaded) {
 				// If already loaded, resolve immediately.
@@ -76,11 +72,9 @@ export default Ember.Component.extend({
 				};
 			}
 		});
-
 		Ember.$.getScript('https://www.youtube.com/iframe_api').then(() => {
-			debug('got iframe script');
+			// got iframe script
 		});
-
 		return iframeAPIReady;
 	},
 
@@ -89,10 +83,8 @@ export default Ember.Component.extend({
 		const width = this.get('width');
 		const height = this.get('height');
 		const $iframe = this.$('#EmberYoutube-player');
-		debug('createPlayer');
 		if (!$iframe) {
-			// throw new Error(`The YouTube API iframe wasn't inserted yet`);
-			console.log('no iframe');
+			// The YouTube API iframe wasn't inserted yet
 			return;
 		}
 		let player = new YT.Player($iframe.get(0), {
@@ -105,7 +97,6 @@ export default Ember.Component.extend({
 				onError: this.onPlayerError.bind(this)
 			}
 		});
-
 		this.set('player', player);
 	},
 
@@ -120,14 +111,11 @@ export default Ember.Component.extend({
 		// Set a readable state name
 		let state = this.get('stateNames.' + event.data.toString());
 		this.set('playerState', state);
-
 		if (this.get('showDebug')) {
 			debug(state);
 		}
-
 		// send actions outside
 		this.sendAction(state);
-
 		// send actions inside
 		this.send(state);
 	},
@@ -136,9 +124,7 @@ export default Ember.Component.extend({
 	onPlayerError(event) {
 		let errorCode = event.data;
 		this.set('playerState', 'error');
-
 		Ember.debug('error' + errorCode);
-
 		// Send the event to the controller
 		this.sendAction('error', errorCode);
 
@@ -189,7 +175,6 @@ export default Ember.Component.extend({
 		const startSeconds = this.get('startSeconds');
 		const endSeconds = this.get('endSeconds');
 		const suggestedQuality = this.get('suggestedQuality');
-
 		// Make sure we have access to the functions we need
 		// otherwise the player might die
 		if (!videoId || !player.loadVideoById || !player.cueVideoById) {
@@ -198,7 +183,6 @@ export default Ember.Component.extend({
 			}
 			return;
 		}
-
 		// Set parameters for the video to be played.
 		let options = {
 			videoId,
@@ -206,10 +190,8 @@ export default Ember.Component.extend({
 			endSeconds,
 			suggestedQuality
 		};
-
 		// Check mute status and set it.
 		this.set('isMuted', player.isMuted());
-
 		// Either load or cue depending on `autoplay`
 		if (this.playerVars.autoplay) {
 			player.loadVideoById(options);
@@ -239,21 +221,17 @@ export default Ember.Component.extend({
 	startTimer: function () {
 		const player = this.get('player');
 		const interval = 1000;
-
 		// set initial times
 		this.setProperties({
 			currentTime: player.getCurrentTime(),
 			duration: player.getDuration()
 		});
-
 		// stop any previously started timer we forgot to clear
 		this.stopTimer();
-
 		// every second update current time
 		let timer = window.setInterval(function () {
 			this.set('currentTime', player.getCurrentTime());
 		}.bind(this), interval);
-
 		// save the timer so we can stop it later
 		this.set('timer', timer);
 	},
