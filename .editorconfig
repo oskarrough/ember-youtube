@@ -4,6 +4,7 @@
 
 root = true
 
+
 [*]
 end_of_line = lf
 charset = utf-8
@@ -11,8 +12,16 @@ trim_trailing_whitespace = true
 insert_final_newline = true
 indent_style = tabs
 
+[*.js]
+indent_style = tabs
+
 [*.hbs]
-insert_final_newline = false
+indent_style = tabs
+
+[*.css]
+indent_style = tabs
+
+[*.html]
 indent_style = tabs
 
 [*.{diff,md}]
