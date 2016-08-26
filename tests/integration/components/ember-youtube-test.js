@@ -1,28 +1,38 @@
-import Ember from 'ember';
+// import Ember from 'ember';
 import {moduleForComponent, test} from 'ember-qunit';
+import wait from 'ember-test-helpers/wait';
 import hbs from 'htmlbars-inline-precompile';
 
 moduleForComponent('ember-youtube', 'Integration | Component | ember youtube', {
 	integration: true
 });
 
-test('it renders', function (assert) {
-	assert.expect(2);
-	// Set any properties with this.set('myProperty', 'value');
-	// Handle any actions with this.on('myAction', function(val) { ... });" + EOL + EOL +
-
-	this.render(hbs`{{ember-youtube}}`);
-
-	assert.equal(this.$().text().trim(), '', 'starts empty');
-
-	// Template block usage:" + EOL +
-	this.render(hbs`
-		{{#ember-youtube}}
-			template block text
-		{{/ember-youtube}}
-	`);
-	assert.equal(this.$('.EmberYoutube-yield').text().trim(), 'template block text', 'yield is wrapped in an extra <div>');
+test('it loads the youtubeapi and create an iframe', function (assert) {
+	this.set('youTubeId', 'w311Hd4K_Fk');
+	this.render(hbs`{{ember-youtube ytid=youTubeId}}`);
+	return wait().then(() => {
+		return wait().then(() => {
+			// it needs a double wait for whatever reason
+			assert.ok(this.$('iframe').length, 'has iframe');
+		});
+	});
 });
+
+// Todo: create a promise so we can assert autoplay is working
+// test('it can autoplay', function (assert) {
+// 	this.set('youTubeId', 'w311Hd4K_Fk');
+// 	this.set('myPlayerVars', {autoplay: 1});
+// 	this.render(hbs`{{ember-youtube ytid=youTubeId showControls=true playerVars=myPlayerVars}}`);
+// 	// console.log(this.$('.EmberYoutube-controls button').eq(0).text());
+// 	return wait().then(() => {
+// 		// it needs a double wait for whatever reason
+// 		return wait().then(() => {
+// 			assert.ok(this.$('iframe').length, 'has iframe');
+// 			// var btnText = this.$('.EmberYoutube-controls button').eq(0).text();
+// 			// assert.equal(btnText, 'pause');
+// 		});
+// 	});
+// });
 
 test('it can show and remove controls', function (assert) {
 	assert.expect(3);
@@ -41,16 +51,4 @@ test('it can show and hide progress', function (assert) {
 	assert.equal(this.$('.EmberYoutube-progress').length, 0, 'Progress is hidden by default');
 	this.set('progress', true);
 	assert.equal(this.$('.EmberYoutube-progress').length, 1, 'Progress can be shown');
-});
-
-test('it has an iframe', function (assert) {
-	const done = assert.async();
-	this.set('youtubeVideoId', 'fZ7MhTRmJ60');
-	this.render(hbs`{{ember-youtube ytid=youtubeVideoId}}`);
-	// It takes some time before the youtube api is loaded,
-	// how do we avoid the timeout?
-	Ember.run.later(this, function () {
-		assert.ok(this.$('iframe').length);
-		done();
-	}, 1000);
 });
