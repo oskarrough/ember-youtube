@@ -47,52 +47,78 @@ export default Ember.Component.extend({
 	}),
 
 	loadAndCreatePlayer: on('didInsertElement', function () {
-		return new RSVP.Promise(resolve => {
-			this.loadYouTubeApi().then(() => {
-				this.createPlayer().then(player => {
-					this.set('player', player);
-					this.set('playerState', 'ready');
-					this.loadVideo();
-					resolve();
+		debug('loadAndCreatePlayer');
+
+		Ember.run(() => {
+			const promise = new RSVP.Promise(resolve => {
+				this.loadYouTubeApi().then(() => {
+					debug('loadYouTubeApi THEN');
+					this.createPlayer().then(player => {
+						debug('createPlayer THEN');
+						this.set('player', player);
+						this.set('playerState', 'ready');
+						this.loadVideo();
+						debug('loadAndCreatePlayer resolving');
+						resolve();
+					});
 				});
 			});
+
+			// The `wait` helper waits for this run loop,
+			// but not the above promise, which is what i want.
+			if (Ember.testing) {
+				run.later(() => {
+					debug('loadAndCreatePlayer force-quit');
+				}, 3000);
+			}
+
+			return promise;
 		});
 	}),
 
 	// A promise that is resolved when window.onYouTubeIframeAPIReady is called.
 	// The promise is resolved with a reference to window.YT object.
 	loadYouTubeApi() {
+		debug('loadYouTubeApi');
 		return new RSVP.Promise((resolve) => {
 			let previous;
 			previous = window.onYouTubeIframeAPIReady;
-			// The API will call this function when page has finished downloading
-			// the JavaScript for the player API.
-			window.onYouTubeIframeAPIReady = () => {
-				if (previous) {
-					previous();
-				}
-				resolve(window.YT);
-			};
-			$.getScript('https://www.youtube.com/iframe_api');
+			$.getScript('https://www.youtube.com/iframe_api').done(() => {
+				console.log('loadYouTubeApi got script');
+				// The API will call this function when page has finished downloading
+				// the JavaScript for the player API.
+				window.onYouTubeIframeAPIReady = () => {
+					if (previous) {
+						previous();
+					}
+					debug('loadYouTubeApi resolving');
+					resolve(window.YT);
+				};
+			});
 		});
 	},
 
 	// A promise that is immediately resolved with a YouTube player object.
 	createPlayer() {
+		debug('createPlayer');
 		const playerVars = this.get('playerVars');
 		const width = this.get('width');
 		const height = this.get('height');
-		// const iframeEl = this.element.querySelector('#EmberYoutube-player');
-		const iframeEl = this.$('#EmberYoutube-player').get(0);
+		// const iframe = this.element.querySelector('#EmberYoutube-player');
+		const iframe = this.$('#EmberYoutube-player');
 		let player;
-
-		return new RSVP.Promise((resolve) => {
-			player = new YT.Player(iframeEl, {
+		return new RSVP.Promise((resolve, reject) => {
+			if (!iframe) {
+				debug('createPlayer FAIL');
+				reject(`Couldn't find the iframe element to create a YouTube player`);
+			}
+			player = new YT.Player(iframe.get(0), {
 				width,
 				height,
 				playerVars,
 				events: {
 					onReady() {
+						debug('createPlayer resolving');
 						resolve(player);
 					},
 					onStateChange: this.onPlayerStateChange.bind(this),
