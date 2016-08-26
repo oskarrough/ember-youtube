@@ -47,11 +47,9 @@ export default Ember.Component.extend({
 	}),
 
 	loadAndCreatePlayer: on('didInsertElement', function () {
-		console.log('running');
 		return new RSVP.Promise(resolve => {
 			this.loadYouTubeApi().then(() => {
 				this.createPlayer().then(player => {
-					console.log('running');
 					this.set('player', player);
 					this.set('playerState', 'ready');
 					this.loadVideo();
@@ -88,18 +86,13 @@ export default Ember.Component.extend({
 		const iframeEl = this.$('#EmberYoutube-player').get(0);
 		let player;
 
-		return new RSVP.Promise((resolve, reject) => {
-			if (!iframeEl) {
-				console.log('no iframe');
-				reject();
-			}
+		return new RSVP.Promise((resolve) => {
 			player = new YT.Player(iframeEl, {
 				width,
 				height,
 				playerVars,
 				events: {
 					onReady() {
-						console.log('onReady');
 						resolve(player);
 					},
 					onStateChange: this.onPlayerStateChange.bind(this),
@@ -127,21 +120,20 @@ export default Ember.Component.extend({
 	onPlayerError(event) {
 		let errorCode = event.data;
 		this.set('playerState', 'error');
-		Ember.debug('error' + errorCode);
+		debug('error' + errorCode);
 		// Send the event to the controller
 		this.sendAction('error', errorCode);
-
 		// switch(errorCode) {
 		// 	case 2:
-		// 		Ember.debug('Invalid parameter');
+		// 		debug('Invalid parameter');
 		// 		break;
 		// 	case 100:
-		// 		Ember.debug('Not found/private');
+		// 		debug('Not found/private');
 		// 		this.send('playNext');
 		// 		break;
 		// 	case 101:
 		// 	case 150:
-		// 		Ember.debug('Embed not allowed');
+		// 		debug('Embed not allowed');
 		// 		this.send('playNext');
 		// 		break;
 		// 	default:
@@ -149,6 +141,8 @@ export default Ember.Component.extend({
 		// }
 	},
 
+	// Returns a boolean that indicates playback status
+	// by looking at the player state.
 	isPlaying: computed('playerState', {
 		get() {
 			const player = this.get('player');
@@ -171,7 +165,7 @@ export default Ember.Component.extend({
 		}
 	}),
 
-	// Load (and plays) a video every time ytid changes
+	// Load (and plays) a video every time ytid changes.
 	loadVideo: observer('ytid', function () {
 		const player = this.get('player');
 		const videoId = this.get('ytid');
@@ -179,7 +173,7 @@ export default Ember.Component.extend({
 		const endSeconds = this.get('endSeconds');
 		const suggestedQuality = this.get('suggestedQuality');
 		// Make sure we have access to the functions we need
-		// otherwise the player might die
+		// otherwise the player might die.
 		if (!videoId || !player.loadVideoById || !player.cueVideoById) {
 			if (this.get('showDebug')) {
 				debug('no id');
@@ -195,7 +189,7 @@ export default Ember.Component.extend({
 		};
 		// Check mute status and set it.
 		this.set('isMuted', player.isMuted());
-		// Either load or cue depending on `autoplay`
+		// Either load or cue depending on `autoplay`.
 		if (this.playerVars.autoplay) {
 			player.loadVideoById(options);
 		} else {
@@ -243,20 +237,20 @@ export default Ember.Component.extend({
 		window.clearInterval(this.get('timer'));
 	},
 
-	// avoids 'undefined' value for the <progress> element
+	// avoids 'undefined' value for the <progress> element.
 	currentTimeValue: computed('currentTime', function () {
 		let time = this.get('currentTime');
 		return time ? time : 0;
 	}),
 
-	// avoids 'undefined' value for the <progress> element
+	// avoids 'undefined' value for the <progress> element.
 	durationValue: computed('duration', function () {
 		let duration = this.get('duration');
 		return duration ? duration : 0;
 	}),
 
-	// OK, this is really stupid but couldn't access the "event" inside
-	// an ember action so here's a manual click handler instead
+	// OK, this is stupid but couldn't access the "event" inside
+	// an ember action so here's a manual click handler instead.
 	progressBarClick: on('didInsertElement', function () {
 		let self = this;
 		this.$().on('click', 'progress', function (event) {

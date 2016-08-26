@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
-	youTubeId: 'fZ7MhTRmJ60', // NEFrNP-BLcI
+	youTubeId: 'fZ7MhTRmJ60',
 	volume: 100,
 
 	customPlayerVars: {
