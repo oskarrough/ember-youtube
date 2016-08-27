@@ -13,7 +13,7 @@ test('it loads the youtubeapi and create an iframe', function (assert) {
 	return wait().then(() => {
 		return wait().then(() => {
 			// it needs a double wait for whatever reason
-			console.log('asserting');
+			// console.log('asserting');
 			assert.ok(this.$('iframe').length, 'has iframe');
 		});
 	});

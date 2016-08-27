@@ -19,17 +19,17 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
+    - env: EMBER_TRY_SCENARIO=ember-beta
     - env: EMBER_TRY_SCENARIO=ember-canary
 
 before_install:
-  - export PATH=/usr/local/phantomjs-2.0.0/bin:$PATH
-  # prevent the npm loading indicator
-  - npm config --global set spin false
-  # if npm version is less 3.0.0 (lets say 1.x or 2.x) we should attempt to upgrade to 3
-  - if [[ $(npm -v | cut -d '.' -f 1) -lt 3 ]]; then npm i -g npm@^3; fi
+  - "npm install -g npm@^3"
+  - npm config -set spin false
+  - npm install -g bower
+  - npm install phantomjs-prebuilt
+  - node_modules/phantomjs-prebuilt/bin/phantomjs --version
 
 install:
-  - npm install -g bower
   - npm install
   - bower install
 
