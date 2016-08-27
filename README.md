@@ -1,10 +1,8 @@
 # ember-youtube
 
-A simple Ember.js component to play and control YouTube videos using the iframe API. Pass it a YouTube video ID and you're good to go! You can see a demonstration at [ember-youtube.surge.sh](http://ember-youtube.surge.sh).
+An Ember.js component to play and control YouTube videos using the iframe API. Pass it a YouTube video ID and you're good to go! Every day this component is being used on [Radio4000](https://radio4000.com).
 
-Every day this component is being battle-tested on [Radio4000](http://radio4000.com) and although I haven't been able to write any tests yet, it works!
-
-![](https://travis-ci.org/oskarrough/ember-youtube.svg?branch=master)
+You can see a demonstration at [ember-youtube.surge.sh](http://ember-youtube.surge.sh).
 
 ## Features
 
@@ -12,6 +10,8 @@ Every day this component is being battle-tested on [Radio4000](http://radio4000.
 - Custom (external) controls (make your own buttons)
 - Custom progress bar in full sync with the YouTube player
 - Extra: custom time properties (for instance "4:31 / 7:58") formatted with Moment.js
+
+![](https://travis-ci.org/oskarrough/ember-youtube.svg?branch=master)
 
 ## Quick start
 
