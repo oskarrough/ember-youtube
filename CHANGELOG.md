@@ -1,5 +1,9 @@
 # Changelog for ember-youtube
 
+### 0.6.1
+
+Options that would be mapped to playerVars have been removed (fs and autoplay) and are now set through a playerVars object on the component. Also through a bit of async trickery, the tests now pass.
+
 ### 0.5.3
 
 Extracted custom timestamps from ember-youtube to slim the addon. Moment.js will no longer be included by default. See the readme for instructions for instructions on how to do it manually.

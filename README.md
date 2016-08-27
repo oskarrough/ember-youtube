@@ -4,6 +4,8 @@ A simple Ember.js component to play and control YouTube videos using the iframe 
 
 Every day this component is being battle-tested on [Radio4000](http://radio4000.com) and although I haven't been able to write any tests yet, it works!
 
+![](https://travis-ci.org/oskarrough/ember-youtube.svg?branch=master)
+
 ## Features
 
 - Full support for all YouTube player events (and errors)
@@ -19,25 +21,23 @@ Inside your Ember CLI project run:
 ember install ember-youtube
 ```
 
-If you are using Ember CLI 0.1.5 - 0.2.2, please use `ember install:addon ember-youtube` instead. If you're not using Ember CLI you're on your own, sorry.
-
-Now you have access to the `ember-youtube` component in all your templates. Only the `ytid` property is required.
+Now you have access to the `ember-youtube` component in all your templates. Only a `ytid` property is required:
 
 ```hbs
 {{ember-youtube ytid=youTubeId}}
 ```
 
-Beautiful, no? Here's another example showcasing all options. You can also see the component file directly: [addon/components/ember-youtube.js](https://github.com/oskarrough/ember-youtube/blob/master/addon/components/ember-youtube.js).
+Here's another example with all options:
 
 ```hbs
 {{ember-youtube
 	ytid="fZ7MhTRmJ60"
 	volume=100
+	playerVars=customPlayerVars
 
-	showControls=false
-	showTime=false
-	showProgress=false
 	showDebug=false
+	showControls=false
+	showProgress=false
 
 	delegate=this
 	delegate-as="emberYoutube"
@@ -50,39 +50,34 @@ Beautiful, no? Here's another example showcasing all options. You can also see t
 
 ## YouTube player options
 
-To define the [playerVars](https://developers.google.com/youtube/player_parameters) of the embed itself, you can pass `playerVars` object to the component. Here's an example:
+The YouTube API allows you to define an object of options called [playerVars](https://developers.google.com/youtube/player_parameters). With ember-youtube, you can optionally set this object on the component:
 
 ```javascript
 // controller.js
-playerVars: {
+myPlayerVars: {
 	autoplay: 1,
 	showinfo: 0
 }
 ```
 
 ```hbs
-{{ember-youtube ytid="fZ7MhTRmJ60" playerVars=playerVars}}
+{{ember-youtube ytid="fZ7MhTRmJ60" playerVars=myPlayerVars}}
 ```
 
 ## External controls
 
-If you want your own buttons, you need to do two things:
+If you want your own buttons to control the player there are two steps.
 
-1) Make the ember-youtube available to outside which normally means your controller. You do this with the `delegate` and `delegate-as` properties of ember-youtube.
-
-They expose the component and give you a target for your actions. Like this:
+1) Make the ember-youtube component available to the outside, which normally means your controller. You do this with the `delegate` and `delegate-as` properties of ember-youtube. They expose the component and give you a target for your button's actions. Like this:
 
 ```hbs
 {{ember-youtube ytid=youTubeId delegate=controller delegate-as="emberYoutube"}}
 ```
 
-2) Specify a target on your actions
-
-Now, and because we used `delegate` and `delegate-as`, you actually have complete access to the insides of the component. Be careful.
-
-But it allows you to do this in the template where you include the player:
+2) Specify a target on your actions. Now, and because we used `delegate` and `delegate-as`, you'll have a `emberYoutube` property on your controller. This is where we'll target our actions. It allows you to do this in the template where you include the player:
 
 ```hbs
+{{ember-youtube ytid="fZ7MhTRmJ60" delegate=this delegate-as="emberYoutube"}}
 <button {{action "togglePlay" target=emberYoutube}}>
 	{{#if emberYoutube.isPlaying}}Pause{{else}}Play{{/if}}
 </button>
@@ -91,9 +86,10 @@ But it allows you to do this in the template where you include the player:
 </button>
 ```
 
-You can also do this:
+You could also do this:
 
 ```hbs
+{{ember-youtube ytid="fZ7MhTRmJ60" delegate=this delegate-as="emberYoutube"}}
 <button {{action "play" target=emberYoutube}}>Play</button>
 <button {{action "pause" target=emberYoutube}}>Pause</button>
 <button {{action "mute" target=emberYoutube}}>Mute</button>
@@ -102,7 +98,7 @@ You can also do this:
 
 ## Seeking
 
-Here's an example of how to seek to a certain time in a video. It accepts a number of seconds.
+Here's an example of seeking to a certain timestamp in a video. It accepts a number of seconds.
 
 ```hbs
 <button {{action "seekTo" 90 target=emberYoutube}}>Seek to 01:30</button>
@@ -190,8 +186,7 @@ On iOS autoplay of videos is disabled by Apple to save your precious data. I hav
 ## Development
 
 * `git clone` this repository
-* `npm install`
-* `bower install`
+* `npm install; bower install`
 
 ## Running
 
@@ -203,8 +198,6 @@ On iOS autoplay of videos is disabled by Apple to save your precious data. I hav
 * `ember test`
 * `ember test --server`
 
-For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
-
 ## Similar projects
 
 * https://www.npmjs.com/package/react-youtube
@@ -213,6 +206,6 @@ For more information on using ember-cli, visit [http://www.ember-cli.com/](http:
 * https://github.com/gilesvangruisen/Swift-YouTube-Player
 * https://github.com/mikecrittenden/tangletube
 
-**This is very much a work in progress and my first ember addon. Please file an issue if you have any feedback or would like to contribute.**
+**Please file an issue if you have any feedback or would like to contribute.**
 
 Thanks to https://github.com/oskarrough/ember-youtube/graphs/contributors.

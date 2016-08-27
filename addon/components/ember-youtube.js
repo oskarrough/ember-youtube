@@ -8,9 +8,9 @@ export default Ember.Component.extend({
 	ytid: null,
 	player: null,
 	playerState: 'loading',
+	showDebug: false,
 	showControls: false,
 	showProgress: false,
-	showDebug: false,
 	showExtras: computed.or('showControls', 'showProgress', 'showDebug'),
 
 	// YouTube's embedded player can take a number of optional parameters.
