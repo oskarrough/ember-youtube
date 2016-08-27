@@ -8,8 +8,8 @@ Every day this component is being battle-tested on [Radio4000](http://radio4000.
 
 - Full support for all YouTube player events (and errors)
 - Custom (external) controls (make your own buttons)
-- Custom time properties (for instance "4:31 / 7:58") formatted with Moment.js
 - Custom progress bar in full sync with the YouTube player
+- Extra: custom time properties (for instance "4:31 / 7:58") formatted with Moment.js
 
 ## Quick start
 
@@ -166,9 +166,7 @@ export default Ember.Component.extend({
 		if (!time || !format) {
 			return null;
 		}
-
 		let duration = moment.duration(time, 'seconds');
-
 		return duration.format(format);
 	}),
 
@@ -176,13 +174,10 @@ export default Ember.Component.extend({
 	durationFormatted: computed('emberYoutube.duration', 'durationFormat', function () {
 		let duration = this.get('emberYoutube.duration');
 		let format = this.get('durationFormat');
-
 		if (!duration || !format) {
 			return null;
 		}
-
 		let time = moment.duration(duration, 'seconds');
-
 		return time.format(format);
 	})
 });

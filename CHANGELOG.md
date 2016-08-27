@@ -2,7 +2,7 @@
 
 ### 0.5.3
 
-Extracted custom timestamps from ember-youtube to slim the addon. Check the readme for instructions on how to do it yourself.
+Extracted custom timestamps from ember-youtube to slim the addon. Moment.js will no longer be included by default. See the readme for instructions for instructions on how to do it manually.
 
 ### 0.5.0
 
