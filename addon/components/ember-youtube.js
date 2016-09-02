@@ -48,13 +48,15 @@ export default Ember.Component.extend({
 
 	loadAndCreatePlayer: on('didInsertElement', function () {
 		debug('loadAndCreatePlayer');
-
 		Ember.run(() => {
-			const promise = new RSVP.Promise(resolve => {
+			const promise = new RSVP.Promise((resolve, reject) => {
 				this.loadYouTubeApi().then(() => {
 					// debug('loadYouTubeApi THEN');
 					this.createPlayer().then(player => {
 						// debug('createPlayer THEN');
+						if (!player) {
+							reject();
+						}
 						this.set('player', player);
 						this.set('playerState', 'ready');
 						this.loadVideo();
@@ -84,7 +86,7 @@ export default Ember.Component.extend({
 			let previous;
 			previous = window.onYouTubeIframeAPIReady;
 			$.getScript('https://www.youtube.com/iframe_api').done(() => {
-				// console.log('loadYouTubeApi got script');
+				// debug('loadYouTubeApi got script');
 				// The API will call this function when page has finished downloading
 				// the JavaScript for the player API.
 				window.onYouTubeIframeAPIReady = () => {
@@ -107,10 +109,10 @@ export default Ember.Component.extend({
 		// const iframe = this.element.querySelector('#EmberYoutube-player');
 		const iframe = this.$('#EmberYoutube-player');
 		let player;
-		return new RSVP.Promise((resolve, reject) => {
+		return new RSVP.Promise((resolve) => {
 			if (!iframe) {
-				debug('createPlayer FAIL');
-				reject(`Couldn't find the iframe element to create a YouTube player`);
+				// reject(`Couldn't find the iframe element to create a YouTube player`);
+				resolve(false);
 			}
 			player = new YT.Player(iframe.get(0), {
 				width,
@@ -118,7 +120,6 @@ export default Ember.Component.extend({
 				playerVars,
 				events: {
 					onReady() {
-						debug('createPlayer resolving');
 						resolve(player);
 					},
 					onStateChange: this.onPlayerStateChange.bind(this),
