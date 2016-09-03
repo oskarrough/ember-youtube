@@ -47,20 +47,16 @@ export default Ember.Component.extend({
 	}),
 
 	loadAndCreatePlayer: on('didInsertElement', function () {
-		debug('loadAndCreatePlayer');
 		Ember.run(() => {
 			const promise = new RSVP.Promise((resolve, reject) => {
 				this.loadYouTubeApi().then(() => {
-					// debug('loadYouTubeApi THEN');
 					this.createPlayer().then(player => {
-						// debug('createPlayer THEN');
 						if (!player) {
 							reject();
 						}
 						this.set('player', player);
 						this.set('playerState', 'ready');
 						this.loadVideo();
-						debug('loadAndCreatePlayer resolving');
 						resolve();
 					});
 				});
@@ -70,7 +66,7 @@ export default Ember.Component.extend({
 			// but not the above promise, which is what i want.
 			if (Ember.testing) {
 				run.later(() => {
-					debug('loadAndCreatePlayer force-quit');
+					// debug('loadAndCreatePlayer force-quit');
 				}, 4000);
 			}
 
@@ -81,19 +77,16 @@ export default Ember.Component.extend({
 	// A promise that is resolved when window.onYouTubeIframeAPIReady is called.
 	// The promise is resolved with a reference to window.YT object.
 	loadYouTubeApi() {
-		// debug('loadYouTubeApi');
 		return new RSVP.Promise((resolve) => {
 			let previous;
 			previous = window.onYouTubeIframeAPIReady;
 			$.getScript('https://www.youtube.com/iframe_api').done(() => {
-				// debug('loadYouTubeApi got script');
 				// The API will call this function when page has finished downloading
 				// the JavaScript for the player API.
 				window.onYouTubeIframeAPIReady = () => {
 					if (previous) {
 						previous();
 					}
-					// debug('loadYouTubeApi resolving');
 					resolve(window.YT);
 				};
 			});
@@ -102,7 +95,6 @@ export default Ember.Component.extend({
 
 	// A promise that is immediately resolved with a YouTube player object.
 	createPlayer() {
-		// debug('createPlayer');
 		const playerVars = this.get('playerVars');
 		const width = this.get('width');
 		const height = this.get('height');
