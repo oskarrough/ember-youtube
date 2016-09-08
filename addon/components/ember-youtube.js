@@ -77,20 +77,30 @@ export default Ember.Component.extend({
 	// A promise that is resolved when window.onYouTubeIframeAPIReady is called.
 	// The promise is resolved with a reference to window.YT object.
 	loadYouTubeApi() {
-		return new RSVP.Promise((resolve) => {
+		const iframeAPIReady = new RSVP.Promise((resolve) => {
 			let previous;
+
 			previous = window.onYouTubeIframeAPIReady;
-			$.getScript('https://www.youtube.com/iframe_api').done(() => {
-				// The API will call this function when page has finished downloading
-				// the JavaScript for the player API.
-				window.onYouTubeIframeAPIReady = () => {
-					if (previous) {
-						previous();
-					}
-					resolve(window.YT);
-				};
-			});
+
+			// Resolve if it's already loaded.
+			if (window.YT && window.YT.loaded) {
+				resolve(window.YT);
+			}
+
+			// The API will call this function when page has finished downloading
+			// the JavaScript for the player API.
+			window.onYouTubeIframeAPIReady = () => {
+				if (previous) {
+					previous();
+				}
+
+				resolve(window.YT);
+			};
 		});
+
+		$.getScript('https://www.youtube.com/iframe_api');
+
+		return iframeAPIReady;
 	},
 
 	// A promise that is immediately resolved with a YouTube player object.
