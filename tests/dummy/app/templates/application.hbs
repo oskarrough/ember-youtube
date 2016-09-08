@@ -1,53 +1,7 @@
-<h1>Ember YouTube</h1>
+<h1>{{link-to "Ember Youtube" "application"}}</h1>
 <p><strong>This is a demonstration of the ember-youtube component.</strong></p>
 <p>You'll see that it's possible to control the player with custom controls.<br>See the <a href="https://github.com/oskarrough/ember-youtube">repository</a> for more information.</p>
 
 <hr>
-
-<h3>Custom controls</h3>
-<p>Try changing the values below:</p>
-
-<section>
-	YouTube ID: {{input value=youTubeId}}<br>
-	Volume: {{input value=volume}}
-</section>
-
-<p>You can play, pause, mute and unmute the component from the surrounding controller:</p>
-
-<section>
-	<button {{action "togglePlay" target=emberYoutube}}>
-		{{if emberYoutube.isPlaying 'Pause' 'Play'}}
-	</button>
-	<button {{action "toggleVolume" target=emberYoutube}}>
-		{{if emberYoutube.isMuted 'Unmute' 'Mute'}}
-	</button>
-	<button {{action "seekTo" 90 target=emberYoutube}}>
-		Seek to 01:30
-	</button>
-</section>
-
-<hr>
-
-<section>
-	<h3>The player</h3>
-	{{ember-youtube
-		ytid=youTubeId
-		volume=volume
-		playerVars=customPlayerVars
-
-		showControls=false
-		showProgress=true
-		showDebug=true
-
-		delegate=this
-		delegate-as="emberYoutube"
-
-		playing="ytPlaying"
-		paused="ytPaused"
-		ended="ytEnded"}}
-</section>
-
-<p>Multiple players on the same route are supported as well.</p>
-{{ember-youtube ytid="NEFrNP-BLcI"}}
 
 {{outlet}}
