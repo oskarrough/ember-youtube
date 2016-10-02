@@ -11,6 +11,7 @@ export default Ember.Component.extend({
 	showDebug: false,
 	showControls: false,
 	showProgress: false,
+	lazyload: false,
 	showExtras: computed.or('showControls', 'showProgress', 'showDebug'),
 
 	// YouTube's embedded player can take a number of optional parameters.
@@ -46,33 +47,39 @@ export default Ember.Component.extend({
 		});
 	}),
 
-	loadAndCreatePlayer: on('didInsertElement', function () {
-		Ember.run(() => {
-			const promise = new RSVP.Promise((resolve, reject) => {
-				this.loadYouTubeApi().then(() => {
-					this.createPlayer().then(player => {
-						if (!player) {
-							reject();
-						}
-						this.set('player', player);
-						this.set('playerState', 'ready');
-						this.loadVideo();
-						resolve();
+	didInsertElement() {
+		this._super(...arguments);
+		if (this.get('lazyload') && !this.get('ytid')) {
+			// If "lazyload" is enabled and we don't have an ID,
+			// we can defer loading and creating the player. As soon as an `ytid` is available it'll run the `loadVideo` observer.
+			return;
+		}
+		this.loadAndCreatePlayer();
+	},
+
+	loadAndCreatePlayer() {
+		const promise = new RSVP.Promise((resolve, reject) => {
+			this.loadYouTubeApi().then(() => {
+				this.createPlayer().then(player => {
+					if (!player) {
+						reject();
+					}
+					this.setProperties({
+						player,
+						playerState: 'ready'
 					});
+					this.loadVideo();
+					resolve();
 				});
 			});
-
-			// The `wait` helper waits for this run loop,
-			// but not the above promise, which is what i want.
-			if (Ember.testing) {
-				run.later(() => {
-					// debug('loadAndCreatePlayer force-quit');
-				}, 4000);
-			}
-
-			return promise;
 		});
-	}),
+		// The `wait` helper waits for this run loop,
+		// but not the above promise, which is what i want.
+		if (Ember.testing) {
+			run.later(() => {}, 5000);
+		}
+		return promise;
+	},
 
 	// A promise that is resolved when window.onYouTubeIframeAPIReady is called.
 	// The promise is resolved with a reference to window.YT object.

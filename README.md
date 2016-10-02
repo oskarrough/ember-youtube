@@ -21,10 +21,10 @@ Inside your Ember CLI project run:
 ember install ember-youtube
 ```
 
-Now you have access to the `ember-youtube` component in all your templates. Only a `ytid` property is required:
+Use the component like this:
 
 ```hbs
-{{ember-youtube ytid=youTubeId}}
+{{ember-youtube ytid="fZ7MhTRmJ60"}}
 ```
 
 Here's another example with all options:
@@ -34,14 +34,12 @@ Here's another example with all options:
 	ytid="fZ7MhTRmJ60"
 	volume=100
 	playerVars=customPlayerVars
-
 	showDebug=false
 	showControls=false
 	showProgress=false
-
+	lazyload=false
 	delegate=this
 	delegate-as="emberYoutube"
-
 	playing="ytPlaying"
 	paused="ytPaused"
 	ended="ytEnded"
@@ -133,6 +131,14 @@ actions: {
     Ember.debug('on buffering from controller');
   }
 }
+```
+
+## Lazy load
+
+Even if you don't supply an `ytid` to the ember-youtube component, it will make sure the iframe player is created as soon as possible. But if you set `lazyload=true`, it will wait for an `ytid`. This will, in some cases, improve the initial render performance. Example:
+
+```hbs
+{{ember-youtube lazyload=true}}
 ```
 
 ## Custom timestamps

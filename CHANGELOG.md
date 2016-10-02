@@ -1,5 +1,9 @@
 # Changelog for ember-youtube
 
+### 0.7.0
+
+Adds a new `lazyload` option to the component (disabled by default). If you're loading one or more players on a page without a `ytid` to start with, this will make sure the API and iframes are not created before a the YouTube ID is there.
+
 ### 0.6.1
 
 Options that would be mapped to playerVars have been removed (fs and autoplay) and are now set through a playerVars object on the component. Also through a bit of async trickery, the tests now pass.
