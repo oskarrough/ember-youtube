@@ -80,16 +80,22 @@ export default Ember.Component.extend({
 		return new RSVP.Promise((resolve) => {
 			let previous;
 			previous = window.onYouTubeIframeAPIReady;
-			$.getScript('https://www.youtube.com/iframe_api').done(() => {
-				// The API will call this function when page has finished downloading
-				// the JavaScript for the player API.
-				window.onYouTubeIframeAPIReady = () => {
-					if (previous) {
-						previous();
-					}
-					resolve(window.YT);
-				};
-			});
+
+			// The API will call this function when page has finished downloading
+			// the JavaScript for the player API.
+			window.onYouTubeIframeAPIReady = () => {
+				if (previous) {
+					previous();
+				}
+				resolve(window.YT);
+			};
+
+			if (window.YT && window.YT.loaded) {
+				// If already loaded, make sure not to load the script again.
+				resolve(window.YT);
+			} else {
+				$.getScript('https://www.youtube.com/iframe_api');
+			}
 		});
 	},
 
@@ -191,12 +197,11 @@ export default Ember.Component.extend({
 		const startSeconds = this.get('startSeconds');
 		const endSeconds = this.get('endSeconds');
 		const suggestedQuality = this.get('suggestedQuality');
-		// Make sure we have access to the functions we need
-		// otherwise the player might die.
-		if (!videoId || !player.loadVideoById || !player.cueVideoById) {
-			if (this.get('showDebug')) {
-				debug('no id');
-			}
+		// Make sure we have access to the functions we need otherwise the player might die.
+		if (!videoId || !player || !player.loadVideoById || !player.cueVideoById) {
+			this.loadAndCreatePlayer().then(() => {
+				this.loadVideo();
+			});
 			return;
 		}
 		// Set parameters for the video to be played.
