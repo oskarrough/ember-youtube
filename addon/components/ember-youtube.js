@@ -1,4 +1,5 @@
 /* global YT, window */
+
 import Ember from 'ember';
 
 const {computed, debug, observer, on, run, RSVP, $} = Ember;
@@ -6,24 +7,26 @@ const {computed, debug, observer, on, run, RSVP, $} = Ember;
 export default Ember.Component.extend({
 	classNames: ['EmberYoutube'],
 	ytid: null,
-	player: null,
-	playerState: 'loading',
-	showDebug: false,
-	showControls: false,
-	showProgress: false,
+	width: 560,
+	height: 315,
+
+	// These options are used to load a video.
+	startSeconds: undefined,
+	endSeconds: undefined,
+	suggestedQuality: undefined,
+
 	lazyload: false,
+	showControls: false,
+	showDebug: false,
+	showProgress: false,
 	showExtras: computed.or('showControls', 'showProgress', 'showDebug'),
 
+	player: null,
+	playerState: 'loading',
 	// YouTube's embedded player can take a number of optional parameters.
 	// https://developers.google.com/youtube/player_parameters#Parameters
 	// https://developers.google.com/youtube/youtube_player_demo
 	playerVars: {},
-
-	startSeconds: undefined,
-	endSeconds: undefined,
-	suggestedQuality: undefined,
-	height: 360,
-	width: 270,
 
 	// from YT.PlayerState
 	stateNames: {
@@ -152,9 +155,11 @@ export default Ember.Component.extend({
 	onPlayerError(event) {
 		let errorCode = event.data;
 		this.set('playerState', 'error');
-		debug('error' + errorCode);
 		// Send the event to the controller
 		this.sendAction('error', errorCode);
+		if (this.get('showDebug')) {
+			debug('error' + errorCode);
+		}
 		// switch(errorCode) {
 		// 	case 2:
 		// 		debug('Invalid parameter');
@@ -358,7 +363,7 @@ export default Ember.Component.extend({
 				this.get('player').seekTo(seconds);
 			}
 		},
-		// youtube events
+		// YouTube events.
 		ready() {},
 		ended() {},
 		playing() {
