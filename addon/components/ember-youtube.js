@@ -46,7 +46,7 @@ export default Ember.Component.extend({
 			if (!delegate) {
 				return;
 			}
-			delegate.set(delegateAs || 'emberYoutubePlayer', this);
+			delegate.set(delegateAs || 'emberYouTube', this);
 		});
 	}),
 
