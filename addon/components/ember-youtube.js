@@ -188,27 +188,14 @@ export default Ember.Component.extend({
 		// }
 	},
 
-	// Returns a boolean that indicates playback status
-	// by looking at the player state.
+	// Returns a boolean that indicates playback status by looking at the player state.
 	isPlaying: computed('playerState', {
 		get() {
 			const player = this.get('player');
-			if (!player || this.get('playerState') === 'loading') {
+			if (!player) {
 				return false;
 			}
 			return player.getPlayerState() === 1;
-		},
-		set(name, paused) {
-			const player = this.get('player');
-			// Stop without player or when loading.
-			if (!player || this.get('playerState') === 'loading') {
-				return;
-			}
-			if (paused) {
-				this.send('play');
-			} else {
-				this.send('pause');
-			}
 		}
 	}),
 
@@ -347,7 +334,11 @@ export default Ember.Component.extend({
 			}
 		},
 		togglePlay() {
-			this.toggleProperty('isPlaying');
+			if (this.get('player') && this.get('isPlaying')) {
+				this.send('pause');
+			} else {
+				this.send('play');
+			}
 		},
 		mute() {
 			if (this.get('player')) {
