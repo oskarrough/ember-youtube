@@ -230,23 +230,7 @@ export default Ember.Component.extend({
 		} else {
 			player.cueVideoById(options);
 		}
-	volume: computed({
-		get: function () {
-			return this.get('player').getVolume();
-		},
-		set: function (name, volume) {
-			let player = this.get('player');
-			// Clamp between 0 and 100
-			if (volume > 100) {
-				volume = 100;
-			} else if (volume < 0) {
-				volume = 0;
-			}
-			if (player) {
-				player.setVolume(volume);
-			}
-		}
-	}),
+	},
 
 	startTimer() {
 		const player = this.get('player');
@@ -294,6 +278,26 @@ export default Ember.Component.extend({
 		}
 	}),
 
+	// A wrapper around the YouTube method to get and set volume.
+	volume: computed({
+		get() {
+			let player = this.get('player');
+			let value = player ? player.getVolume() : 0;
+			return value;
+		},
+		set(name, vol) {
+			let player = this.get('player');
+			// Clamp between 0 and 100
+			if (vol > 100) {
+				vol = 100;
+			} else if (vol < 0) {
+				vol = 0;
+			}
+			if (player) {
+				player.setVolume(vol);
+			}
+			return vol;
+		}
 	}),
 
 	// OK, this is stupid but couldn't access the "event" inside
