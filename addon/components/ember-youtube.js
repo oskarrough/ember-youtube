@@ -52,27 +52,38 @@ export default Ember.Component.extend({
 
 	didInsertElement() {
 		this._super(...arguments);
-		if (this.get('lazyload') && !this.get('ytid')) {
-			// If "lazyload" is enabled and we don't have an ID,
-			// we can defer loading and creating the player. As soon as an `ytid` is available it'll run the `loadVideo` observer.
-			return;
+		if (!this.get('lazyload') && this.get('ytid')) {
+			// If "lazyload" is not enabled and we have an ID, we can start immediately.
+			// Otherwise the `loadVideo` observer will take care of things.
+			this.loadAndCreatePlayer().then(() => {
+				this.loadVideo();
+			});
 		}
-		this.loadAndCreatePlayer();
 	},
 
+	loadAndCreatePlayerIsRunning: false,
 	loadAndCreatePlayer() {
+		let isRunning = this.get('loadAndCreatePlayerIsRunning');
+		if (isRunning) {
+			// some ember-concurrency would be nice here
+			return;
+		}
+		this.set('loadAndCreatePlayerIsRunning', true);
 		const promise = new RSVP.Promise((resolve, reject) => {
 			this.loadYouTubeApi().then(() => {
 				this.createPlayer().then(player => {
-					if (!player) {
-						reject();
-					}
 					this.setProperties({
 						player,
 						playerState: 'ready'
 					});
-					this.loadVideo();
+					this.set('loadAndCreatePlayerIsRunning', false);
 					resolve();
+				})
+				.catch(err => {
+					if (this.get('showDebug')) {
+						Ember.debug(err);
+					}
+					reject(err);
 				});
 			});
 		});
@@ -117,10 +128,9 @@ export default Ember.Component.extend({
 		// const iframe = this.element.querySelector('#EmberYoutube-player');
 		const iframe = this.$('#EmberYoutube-player');
 		let player;
-		return new RSVP.Promise((resolve) => {
+		return new RSVP.Promise((resolve, reject) => {
 			if (!iframe) {
-				// reject(`Couldn't find the iframe element to create a YouTube player`);
-				resolve(false);
+				reject(`Couldn't find the iframe element to create a YouTube player`);
 			}
 			player = new YT.Player(iframe.get(0), {
 				width,
@@ -203,36 +213,36 @@ export default Ember.Component.extend({
 	}),
 
 	// Load (and plays) a video every time ytid changes.
-	loadVideo: observer('ytid', function () {
+	ytidDidChange: observer('ytid', function () {
 		const player = this.get('player');
-		const videoId = this.get('ytid');
-		const startSeconds = this.get('startSeconds');
-		const endSeconds = this.get('endSeconds');
-		const suggestedQuality = this.get('suggestedQuality');
-		// Make sure we have access to the functions we need otherwise the player might die.
-		if (!videoId || !player || !player.loadVideoById || !player.cueVideoById) {
+		const ytid = this.get('ytid');
+
+		if (!ytid) {
+			return;
+		}
+
+		if (!player) {
 			this.loadAndCreatePlayer().then(() => {
 				this.loadVideo();
 			});
 			return;
 		}
+		this.loadVideo();
+	}),
+
+	loadVideo() {
+		const player = this.get('player');
+		const ytid = this.get('ytid');
+
 		// Set parameters for the video to be played.
-		let options = {
-			videoId,
-			startSeconds,
-			endSeconds,
-			suggestedQuality
-		};
-		// Check mute status and set it.
-		this.set('isMuted', player.isMuted());
+		let options = Ember.getProperties(this, ['startSeconds', 'endSeconds', 'suggestedQuality']);
+		options.videoId = ytid;
 		// Either load or cue depending on `autoplay`.
 		if (this.playerVars.autoplay) {
 			player.loadVideoById(options);
 		} else {
 			player.cueVideoById(options);
 		}
-	}),
-
 	volume: computed({
 		get: function () {
 			return this.get('player').getVolume();
