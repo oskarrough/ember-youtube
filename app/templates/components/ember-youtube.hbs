@@ -11,7 +11,7 @@
 
 		{{#if showProgress}}
 			<p class="EmberYoutube-progress">
-				<progress value={{currentTimeValue}} max={{durationValue}}></progress>
+				<progress value={{currentTime}} max={{duration}}></progress>
 			</p>
 		{{/if}}
 
@@ -22,6 +22,8 @@
 					playerState: {{playerState}}<br>
 					isMuted: {{isMuted}}<br>
 					isPlaying: {{isPlaying}}<br>
+					currentTime: {{currentTime}}<br>
+					duration: {{duration}}<br>
 				</code>
 			</p>
 		{{/if}}

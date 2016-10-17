@@ -246,7 +246,7 @@ export default Ember.Component.extend({
 		}
 	}),
 
-	startTimer: function () {
+	startTimer() {
 		const player = this.get('player');
 		const interval = 1000;
 		// set initial times
@@ -257,27 +257,41 @@ export default Ember.Component.extend({
 		// stop any previously started timer we forgot to clear
 		this.stopTimer();
 		// every second update current time
-		let timer = window.setInterval(function () {
+		let timer = window.setInterval(() => {
 			this.set('currentTime', player.getCurrentTime());
-		}.bind(this), interval);
+		}, interval);
 		// save the timer so we can stop it later
 		this.set('timer', timer);
 	},
 
-	stopTimer: function () {
+	stopTimer() {
 		window.clearInterval(this.get('timer'));
 	},
 
-	// avoids 'undefined' value for the <progress> element.
-	currentTimeValue: computed('currentTime', function () {
-		let time = this.get('currentTime');
-		return time ? time : 0;
+	// A wrapper around the YouTube method to get current time.
+	currentTime: computed({
+		get() {
+			let player = this.get('player');
+			let value = player ? player.getCurrentTime() : 0;
+			return value;
+		},
+		set(key, value) {
+			return value;
+		}
 	}),
 
-	// avoids 'undefined' value for the <progress> element.
-	durationValue: computed('duration', function () {
-		let duration = this.get('duration');
-		return duration ? duration : 0;
+	// A wrapper around the YouTube method to get the duration.
+	duration: computed({
+		get() {
+			let player = this.get('player');
+			let value = player ? player.getDuration() : 0;
+			return value;
+		},
+		set(key, value) {
+			return value;
+		}
+	}),
+
 	}),
 
 	// OK, this is stupid but couldn't access the "event" inside
