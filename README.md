@@ -11,7 +11,11 @@ You can see a demonstration at [ember-youtube.surge.sh](http://ember-youtube.sur
 - Custom progress bar in full sync with the YouTube player
 - Extra: custom time properties (for instance "4:31 / 7:58") formatted with Moment.js
 
-![](https://travis-ci.org/oskarrough/ember-youtube.svg?branch=master)
+[![TravisCI Build Status][travis-badge]][travis-badge-url]
+
+[travis-badge]: https://travis-ci.org/oskarrough/ember-youtube.svg?branch=master
+[travis-badge-url]: https://travis-ci.org/oskarrough/ember-youtube
+
 
 ## Quick start
 
