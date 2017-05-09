@@ -76,6 +76,7 @@ export default Ember.Component.extend({
 						player,
 						playerState: 'ready'
 					});
+					this.sendAction('playerCreated', player);
 					this.set('loadAndCreatePlayerIsRunning', false);
 					resolve();
 				})
@@ -157,6 +158,7 @@ export default Ember.Component.extend({
 		}
 		// send actions outside
 		this.sendAction(state);
+		this.sendAction('playerStateChanged', event);
 		// send actions inside
 		this.send(state);
 	},
