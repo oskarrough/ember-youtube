@@ -234,20 +234,23 @@ export default Ember.Component.extend({
 		}
 	},
 
-	startTimer() {
+	updateTime() {
 		const player = this.get('player');
-		const interval = 1000;
-		// set initial times
-		this.setProperties({
-			currentTime: player.getCurrentTime(),
-			duration: player.getDuration()
-		});
+		if (player && player.getDuration && player.getCurrentTime) {
+			this.set('currentTime', player.getCurrentTime());
+			this.set('duration', player.getDuration());
+		}
+	},
+
+	startTimer() {
 		// stop any previously started timer we forgot to clear
 		this.stopTimer();
-		// every second update current time
+		// set initial time by getting the computed properties
+		this.updateTime();
+		// and also once every second so the progressbar is up to date
 		let timer = window.setInterval(() => {
-			this.set('currentTime', player.getCurrentTime());
-		}, interval);
+			this.updateTime();
+		}, 1000);
 		// save the timer so we can stop it later
 		this.set('timer', timer);
 	},
