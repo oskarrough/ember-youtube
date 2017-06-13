@@ -63,12 +63,11 @@ export default Ember.Component.extend({
 
 	loadAndCreatePlayerIsRunning: false,
 	loadAndCreatePlayer() {
-		let isRunning = this.get('loadAndCreatePlayerIsRunning');
-		if (isRunning) {
+		let runningPromise = this.get('loadAndCreatePlayerIsRunning');
+		if (runningPromise) {
 			// some ember-concurrency would be nice here
-			return;
+			return runningPromise;
 		}
-		this.set('loadAndCreatePlayerIsRunning', true);
 		const promise = new RSVP.Promise((resolve, reject) => {
 			this.loadYouTubeApi().then(() => {
 				this.createPlayer().then(player => {
@@ -88,6 +87,8 @@ export default Ember.Component.extend({
 				});
 			});
 		});
+
+		this.set('loadAndCreatePlayerIsRunning', promise);
 		// The `wait` helper waits for this run loop,
 		// but not the above promise, which is what i want.
 		if (Ember.testing) {
