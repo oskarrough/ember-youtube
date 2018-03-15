@@ -196,26 +196,23 @@ On iOS autoplay of videos is disabled by Apple to save your precious data. I hav
 ## Development
 
 * `git clone` this repository
-* `npm install; bower install`
-
-## Running
-
+* `yarn` 
 * `ember server`
 * Visit your app at http://localhost:4200.
 
-## Running Tests
+### Linting
 
-* `ember test`
-* `ember test --server`
+* `npm run lint:js`
+* `npm run lint:js -- --fix`
 
-## Similar projects
+### Running tests
 
-* https://www.npmjs.com/package/react-youtube
-* http://cejast.github.io/ng-youtube/
-* https://github.com/brandly/angular-youtube-embed
-* https://github.com/gilesvangruisen/Swift-YouTube-Player
-* https://github.com/mikecrittenden/tangletube
+* `ember test` – Runs the test suite on the current Ember version
+* `ember test --server` – Runs the test suite in "watch mode"
+* `npm test` – Runs `ember try:each` to test your addon against multiple Ember versions
 
 **Please file an issue if you have any feedback or would like to contribute.**
 
 Thanks to https://github.com/oskarrough/ember-youtube/graphs/contributors.
+
+This project is licensed under the [MIT License](LICENSE.md).
