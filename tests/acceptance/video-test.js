@@ -1,20 +1,14 @@
-import { test } from 'qunit';
-import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
+import { module, test } from 'qunit';
+import { visit, currentURL } from '@ember/test-helpers';
+import { setupApplicationTest } from 'ember-qunit';
 
-moduleForAcceptance('Acceptance | video');
+module('Acceptance | video', function(hooks) {
+	setupApplicationTest(hooks);
 
-// test('homepage renders two videos', function(assert) {
-// 	visit('/');
-// 	andThen(() => {
-// 		assert.equal(find('.EmberYoutube iframe').length, 2);
-// 	});
-// });
+	test('visiting /video', async function(assert) {
+		await visit('/video/jmCytJPqQis');
 
-test('visiting /video', function(assert) {
-	assert.expect(2);
-	visit('/video/jmCytJPqQis');
-	andThen(() => {
 		assert.equal(currentURL(), '/video/jmCytJPqQis');
-		assert.ok(find('.EmberYoutube iframe').length);
 	});
 });
+
