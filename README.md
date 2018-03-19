@@ -121,19 +121,12 @@ The ember-youtube component send four different actions: `playing`, `paused`, `e
 
 ```JavaScript
 actions: {
-  ytPlaying() {
-    Ember.debug('on playing from controller');
-  },
-  ytPaused() {
-    Ember.debug('on paused from controller');
-  },
-  ytEnded() {
-    Ember.debug('on ended from controller');
+  ytPlaying(event) {},
+  ytPaused(event) {},
+  ytEnded(event) {
     // here you could load another video by changing the youTubeId
   },
-  ytBuffering() {
-    Ember.debug('on buffering from controller');
-  }
+  ytBuffering(event) {}
 }
 ```
 
@@ -196,7 +189,7 @@ On iOS autoplay of videos is disabled by Apple to save your precious data. I hav
 ## Development
 
 * `git clone` this repository
-* `yarn` 
+* `yarn`
 * `ember server`
 * Visit your app at http://localhost:4200.
 
