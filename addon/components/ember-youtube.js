@@ -1,10 +1,13 @@
 /* global YT, window */
 
-import Ember from 'ember';
+import $ from 'jquery';
+import Component from '@ember/component';
+import RSVP from 'rsvp'
+import { computed, getProperties, setProperties, observer } from '@ember/object';
+import { debug } from '@ember/debug';
+import {run} from '@ember/runloop';
 
-const {computed, debug, observer, on, run, RSVP, $} = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
 	classNames: ['EmberYoutube'],
 	ytid: null,
 	width: 560,
@@ -23,23 +26,31 @@ export default Ember.Component.extend({
 
 	player: null,
 	playerState: 'loading',
-	// YouTube's embedded player can take a number of optional parameters.
-	// https://developers.google.com/youtube/player_parameters#Parameters
-	// https://developers.google.com/youtube/youtube_player_demo
-	playerVars: {},
 
-	// from YT.PlayerState
-	stateNames: {
-		'-1': 'ready',		// READY
-		0: 'ended', 		// YT.Player.ENDED
-		1: 'playing', 		// YT.PlayerState.PLAYING
-		2: 'paused', 		// YT.PlayerState.PAUSED
-		3: 'buffering', 	// YT.PlayerState.BUFFERING
-		5: 'queued'			// YT.PlayerState.CUED
+	init() {
+		this._super();
+
+		setProperties(this, {
+			// YouTube's embedded player can take a number of optional parameters.
+			// https://developers.google.com/youtube/player_parameters#Parameters
+			// https://developers.google.com/youtube/youtube_player_demo
+			playerVars: {},
+			// from YT.PlayerState
+			stateNames: {
+				'-1': 'ready',		// READY
+				0: 'ended', 		// YT.Player.ENDED
+				1: 'playing', 		// YT.PlayerState.PLAYING
+				2: 'paused', 		// YT.PlayerState.PAUSED
+				3: 'buffering', 	// YT.PlayerState.BUFFERING
+				5: 'queued'			// YT.PlayerState.CUED
+			}
+		});
+
+		this._register();
 	},
 
 	// Expose the component to the outside world.
-	_register: on('init', function () {
+	_register() {
 		const delegate = this.get('delegate');
 		const delegateAs = this.get('delegate-as');
 		run.schedule('afterRender', () => {
@@ -48,10 +59,13 @@ export default Ember.Component.extend({
 			}
 			delegate.set(delegateAs || 'emberYouTube', this);
 		});
-	}),
+	},
 
 	didInsertElement() {
 		this._super(...arguments);
+
+		this.progressBarClick();
+
 		if (!this.get('lazyload') && this.get('ytid')) {
 			// If "lazyload" is not enabled and we have an ID, we can start immediately.
 			// Otherwise the `loadVideo` observer will take care of things.
@@ -79,21 +93,17 @@ export default Ember.Component.extend({
 					this.set('loadAndCreatePlayerIsRunning', false);
 					resolve();
 				})
-				.catch(err => {
-					if (this.get('showDebug')) {
-						Ember.debug(err);
-					}
-					reject(err);
-				});
+					.catch(err => {
+						if (this.get('showDebug')) {
+							debug(err);
+						}
+						reject(err);
+					});
 			});
 		});
 
 		this.set('loadAndCreatePlayerIsRunning', promise);
-		// The `wait` helper waits for this run loop,
-		// but not the above promise, which is what i want.
-		if (Ember.testing) {
-			run.later(() => {}, 5000);
-		}
+
 		return promise;
 	},
 
@@ -127,14 +137,13 @@ export default Ember.Component.extend({
 		const playerVars = this.get('playerVars');
 		const width = this.get('width');
 		const height = this.get('height');
-		// const iframe = this.element.querySelector('#EmberYoutube-player');
-		const iframe = this.$('#EmberYoutube-player');
+		const container = this.element.querySelector('.EmberYoutube-player');
 		let player;
 		return new RSVP.Promise((resolve, reject) => {
-			if (!iframe) {
-				reject(`Couldn't find the iframe element to create a YouTube player`);
+			if (!container) {
+				reject(`Couldn't find the container element to create a YouTube player`);
 			}
-			player = new YT.Player(iframe.get(0), {
+			player = new YT.Player(container, {
 				width,
 				height,
 				playerVars,
@@ -225,7 +234,7 @@ export default Ember.Component.extend({
 		const ytid = this.get('ytid');
 
 		// Set parameters for the video to be played.
-		let options = Ember.getProperties(this, ['startSeconds', 'endSeconds', 'suggestedQuality']);
+		let options = getProperties(this, ['startSeconds', 'endSeconds', 'suggestedQuality']);
 		options.videoId = ytid;
 		// Either load or cue depending on `autoplay`.
 		if (this.playerVars.autoplay) {
@@ -308,17 +317,17 @@ export default Ember.Component.extend({
 
 	// OK, this is stupid but couldn't access the "event" inside
 	// an ember action so here's a manual click handler instead.
-	progressBarClick: on('didInsertElement', function () {
+	progressBarClick() {
 		let self = this;
 		this.$().on('click', 'progress', function (event) {
 			// get the x position of the click inside our progress el
-			let x = event.pageX - Ember.$(this).position().left;
+			let x = event.pageX - $(this).position().left;
 			// convert it to a value relative to the duration (max)
 			let clickedValue = x * this.max / this.offsetWidth;
 			// 250 = 0.25 seconds into player
 			self.send('seekTo', clickedValue);
 		});
-	}),
+	},
 
 	// clean up when element will be destroyed.
 	willDestroyElement() {

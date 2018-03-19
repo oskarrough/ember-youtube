@@ -1,9 +1,14 @@
-import Ember from 'ember';
+import Route from '@ember/routing/route';
+import Object from '@ember/object';
+import RSVP from 'rsvp'
 
-export default Ember.Route.extend({
+export default Route.extend({
 	model(params) {
-		return Ember.Object.create({
+		const model = Object.create({
 			id: params.youtube_id
 		});
+		return new RSVP.Promise(resolve => {
+			setTimeout(() => resolve(model), 500)
+		})
 	}
 });
