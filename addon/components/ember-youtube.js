@@ -137,14 +137,13 @@ export default Component.extend({
 		const playerVars = this.get('playerVars');
 		const width = this.get('width');
 		const height = this.get('height');
-		// const iframe = this.element.querySelector('#EmberYoutube-player');
-		const iframe = this.$('#EmberYoutube-player');
+		const container = this.element.querySelector('.EmberYoutube-player');
 		let player;
 		return new RSVP.Promise((resolve, reject) => {
-			if (!iframe) {
-				reject(`Couldn't find the iframe element to create a YouTube player`);
+			if (!container) {
+				reject(`Couldn't find the container element to create a YouTube player`);
 			}
-			player = new YT.Player(iframe.get(0), {
+			player = new YT.Player(container, {
 				width,
 				height,
 				playerVars,
