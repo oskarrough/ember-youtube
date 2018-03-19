@@ -11,7 +11,7 @@ module('Integration | Component | ember-youtube', function(hooks) {
 	test('youtube api replaces our container with an iframe', async function (assert) {
 		this.set('youTubeId', 'w311Hd4K_Fk')
 		await render(hbs`{{ember-youtube ytid=youTubeId}}`)
-		assert.equal(this.element.querySelector('.EmberYoutube-player').tagName, 'DIV', 'has container')
+		assert.ok(this.element.querySelector('.EmberYoutube-player'), 'has container')
 		await waitFor('iframe')
 		assert.equal(this.element.querySelector('.EmberYoutube-player').tagName, 'IFRAME', 'container is replaced')
 	})
