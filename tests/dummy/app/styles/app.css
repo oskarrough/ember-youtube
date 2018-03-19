@@ -12,7 +12,7 @@ section {
 	margin-bottom: 1rem;
 }
 
-#EmberYoutube-player {
+.EmberYoutube-player {
 	width: 480px;
 	max-width: 100%;
 }
