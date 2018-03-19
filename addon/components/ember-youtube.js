@@ -167,7 +167,7 @@ export default Component.extend({
 			debug(state);
 		}
 		// send actions outside
-		this.sendAction(state);
+		this.sendAction(state, event);
 		this.sendAction('playerStateChanged', event);
 		// send actions inside
 		this.send(state);
