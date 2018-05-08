@@ -70,7 +70,28 @@ export default Component.extend({
 		if (!this.get('lazyload') && this.get('ytid')) {
 			// If "lazyload" is not enabled and we have an ID, we can start immediately.
 			// Otherwise the `loadVideo` observer will take care of things.
-			this.get('loadAndCreatePlayer').perform();						
+			this.get('loadAndCreatePlayer').perform();
+		}
+	},
+
+	willDestroyElement() {
+		this.get('loadAndCreatePlayer').cancelAll();
+
+		// clear the timer
+		this.stopTimer();
+
+		// destroy video player
+		const player = this.get('player');
+		if (player) {
+			player.destroy();
+			this.set('player', null);
+		}
+
+		// clear up if "delegated"
+		const delegate = this.get('delegate');
+		const delegateAs = this.get('delegate-as');
+		if (delegate) {
+			delegate.set(delegateAs || 'emberYouTube', null);
 		}
 	},
 
@@ -314,19 +335,6 @@ export default Component.extend({
 			// 250 = 0.25 seconds into player
 			self.send('seekTo', clickedValue);
 		});
-	},
-
-	// clean up when element will be destroyed.
-	willDestroyElement() {
-		// clear the timer
-		this.stopTimer();
-		this.get('loadAndCreatePlayer').cancelAll();
-		// destroy video player
-		var player = this.get('player');
-		if (player) {
-			player.destroy();
-			this.set('player', null);
-		}
 	},
 
 	actions: {
