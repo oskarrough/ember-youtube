@@ -5,7 +5,8 @@ import Component from '@ember/component';
 import RSVP from 'rsvp'
 import { computed, getProperties, setProperties, observer } from '@ember/object';
 import { debug } from '@ember/debug';
-import {run} from '@ember/runloop';
+import { run } from '@ember/runloop';
+import { task } from 'ember-concurrency';
 
 export default Component.extend({
 	classNames: ['EmberYoutube'],
@@ -69,43 +70,31 @@ export default Component.extend({
 		if (!this.get('lazyload') && this.get('ytid')) {
 			// If "lazyload" is not enabled and we have an ID, we can start immediately.
 			// Otherwise the `loadVideo` observer will take care of things.
-			this.loadAndCreatePlayer().then(() => {
-				this.loadVideo();
-			});
+			this.get('loadAndCreatePlayer').perform();						
 		}
 	},
 
-	loadAndCreatePlayerIsRunning: false,
-	loadAndCreatePlayer() {
-		let runningPromise = this.get('loadAndCreatePlayerIsRunning');
-		if (runningPromise) {
-			// some ember-concurrency would be nice here
-			return runningPromise;
-		}
-		const promise = new RSVP.Promise((resolve, reject) => {
-			this.loadYouTubeApi().then(() => {
-				this.createPlayer().then(player => {
-					this.setProperties({
-						player,
-						playerState: 'ready'
-					});
-					this.sendAction('playerCreated', player);
-					this.set('loadAndCreatePlayerIsRunning', false);
-					resolve();
-				})
-					.catch(err => {
-						if (this.get('showDebug')) {
-							debug(err);
-						}
-						reject(err);
-					});
+	loadAndCreatePlayer: task(function * () {
+		try {
+			yield this.loadYouTubeApi();
+			let player = yield this.createPlayer();
+
+			this.setProperties({
+				player,
+				playerState: 'ready'
 			});
-		});
 
-		this.set('loadAndCreatePlayerIsRunning', promise);
+			this.sendAction('playerCreated', player);
 
-		return promise;
-	},
+			this.loadVideo();
+		} catch(err) {
+			if (this.get('showDebug')) {
+				debug(err);
+			}
+
+			throw err
+		}
+	}).drop(),
 
 	// A promise that is resolved when window.onYouTubeIframeAPIReady is called.
 	// The promise is resolved with a reference to window.YT object.
@@ -221,9 +210,7 @@ export default Component.extend({
 		}
 
 		if (!player) {
-			this.loadAndCreatePlayer().then(() => {
-				this.loadVideo();
-			});
+			this.get('loadAndCreatePlayer').perform();
 			return;
 		}
 		this.loadVideo();
@@ -333,6 +320,7 @@ export default Component.extend({
 	willDestroyElement() {
 		// clear the timer
 		this.stopTimer();
+		this.get('loadAndCreatePlayer').cancelAll();
 		// destroy video player
 		var player = this.get('player');
 		if (player) {
