@@ -1,14 +1,10 @@
 <h3>Custom controls</h3>
-<p>Try changing the values below:</p>
+<p>You can play, pause, mute and unmute the component from the surrounding controller. Try changing the values below:</p>
 
 <section>
 	YouTube ID: {{input value=youTubeId}}<br>
-	Volume: {{input value=volume}}
-</section>
-
-<p>You can play, pause, mute and unmute the component from the surrounding controller:</p>
-
-<section>
+	Volume: {{input type="number" value=volume}}<br>
+	<br>
 	<button {{action "togglePlay" target=emberYoutube}}>
 		{{if emberYoutube.isPlaying "Pause" "Play"}}
 	</button>
@@ -43,5 +39,3 @@
 
 <p>Multiple players on the same route are supported as well.</p>
 {{ember-youtube ytid="NEFrNP-BLcI"}}
-
-<p>Here's {{link-to "another video" "video" "jmCytJPqQis"}}.</p>

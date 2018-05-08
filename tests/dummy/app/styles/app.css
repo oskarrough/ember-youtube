@@ -12,6 +12,24 @@ section {
 	margin-bottom: 1rem;
 }
 
+a {
+	color: red;
+}
+
+a.active {
+	background-color: red;
+	color: white;
+}
+
+h1 {
+	font-size: 1em;
+}
+
+h1 a {
+	color: black;
+	text-decoration: none;
+}
+
 .EmberYoutube-player {
 	width: 480px;
 	max-width: 100%;

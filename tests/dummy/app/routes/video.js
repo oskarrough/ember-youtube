@@ -7,6 +7,7 @@ export default Route.extend({
 		const model = Object.create({
 			id: params.youtube_id
 		});
+		// Fake a network request.
 		return new RSVP.Promise(resolve => {
 			setTimeout(() => resolve(model), 500)
 		})
