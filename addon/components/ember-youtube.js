@@ -35,7 +35,7 @@ export default Component.extend({
 			// YouTube's embedded player can take a number of optional parameters.
 			// https://developers.google.com/youtube/player_parameters#Parameters
 			// https://developers.google.com/youtube/youtube_player_demo
-			playerVars: {},
+			playerVars: Object.assign({}, this.playerVars),
 			// from YT.PlayerState
 			stateNames: {
 				'-1': 'ready',		// READY
