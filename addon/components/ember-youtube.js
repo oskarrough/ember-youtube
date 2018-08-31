@@ -333,6 +333,7 @@ export default Component.extend({
 			// convert it to a value relative to the duration (max)
 			let clickedValue = x * this.max / this.offsetWidth;
 			// 250 = 0.25 seconds into player
+			self.set("currentTime", clickedValue);
 			self.send('seekTo', clickedValue);
 		});
 	},
