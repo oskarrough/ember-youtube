@@ -1,6 +1,6 @@
 {
   "name": "ember-youtube",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "A simple Ember.js component to play and control single YouTube videos using the iframe API.",
   "keywords": [
     "ember-addon",
