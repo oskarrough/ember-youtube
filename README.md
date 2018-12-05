@@ -57,8 +57,11 @@ The YouTube API allows you to define an object of options called [playerVars](ht
 ```javascript
 // controller.js
 myPlayerVars: {
-	autoplay: 1,
-	showinfo: 0
+  autoplay: 1,
+  showinfo: 0,
+  // Setting an origin can remove a YouTube 'postMessage' API warning in the console.
+  // Note, this does not have any effect on localhost.
+  origin: 'https://www.example.com'
 }
 ```
 
