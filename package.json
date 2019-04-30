@@ -16,11 +16,11 @@
   },
   "repository": "https://github.com/oskarrough/ember-youtube",
   "scripts": {
-    "build": "ember build",
+    "build": "ember build --environment=production",
     "lint:js": "eslint ./*.js addon addon-test-support app config lib server test-support tests",
     "start": "ember serve",
     "test": "ember try:each",
-    "deploy-demo": "ember build --envrionment=production; mv dist/index.html dist/200.html; surge dist ember-youtube.surge.sh"
+    "deploy-surge": "mv dist/index.html dist/200.html; surge dist ember-youtube.surge.sh"
   },
   "dependencies": {
     "ember-cli-babel": "^6.6.0",
@@ -55,6 +55,6 @@
   },
   "ember-addon": {
     "configPath": "tests/dummy/config",
-    "demoURL": "http://ember-youtube.surge.sh"
+    "demoURL": "https://ember-youtube.surge.sh"
   }
 }
