@@ -5,7 +5,8 @@ module.exports = {
 		sourceType: 'module'
 	},
 	plugins: [
-		'ember'
+		'ember',
+		'prettier'
 	],
 	extends: [
 		'eslint:recommended',
@@ -15,7 +16,8 @@ module.exports = {
 		browser: true
 	},
 	rules: {
-		'ember/closure-actions': 'warn'
+		'ember/closure-actions': 'warn',
+		'prettier/prettier': 2
 	},
 	overrides: [
 		// node files

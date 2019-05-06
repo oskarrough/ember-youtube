@@ -16,7 +16,7 @@
     "start": "ember serve",
     "test": "ember try:each",
     "deploy-surge": "mv dist/index.html dist/200.html; surge dist ember-youtube.surge.sh",
-    "prettier": "prettier --write addon/**/* app/**/*"
+    "prettier": "prettier --write addon/**/* app/**/* config/**/* tests/**/*"
   },
   "dependencies": {
     "ember-cli-babel": "^6.6.0",
@@ -41,8 +41,10 @@
     "ember-source": "~3.0.0",
     "ember-source-channel-url": "^1.0.1",
     "ember-try": "^0.2.23",
+    "eslint-config-prettier": "^4.2.0",
     "eslint-plugin-ember": "^5.0.0",
     "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-prettier": "^3.0.1",
     "loader.js": "^4.2.3",
     "prettier": "1.17.0"
   },
