@@ -1,5 +1,14 @@
 # Changelog for ember-youtube
 
+### 0.9.5
+
+No longer requires jQuery.
+
+### 0.9.0
+
+New: access the player instance through all youtube events
+Fixed async tests by upgrading to ember-cli 3.0.0 and waitFor.
+
 ### 0.7.0
 
 Adds a new `lazyload` option to the component (disabled by default). If you're loading one or more players on a page without a `ytid` to start with, this will make sure the API and iframes are not created before a the YouTube ID is there.
