@@ -1,3 +1,3 @@
-import EmberYoutube from 'ember-youtube/components/ember-youtube';
+import EmberYoutube from 'ember-youtube/components/ember-youtube'
 
-export default EmberYoutube;
+export default EmberYoutube
