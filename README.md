@@ -201,6 +201,8 @@ On iOS autoplay of videos is disabled by Apple to save your precious data. I hav
 * `npm run lint:js`
 * `npm run lint:js -- --fix`
 
+You can format all scripts with `yarn prettier`
+
 ### Running tests
 
 * `ember test` – Runs the test suite on the current Ember version

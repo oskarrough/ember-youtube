@@ -8,29 +8,39 @@ import hbs from 'htmlbars-inline-precompile'
 module('Integration | Component | ember-youtube', function(hooks) {
 	setupRenderingTest(hooks)
 
-	test('youtube api replaces our container with an iframe', async function (assert) {
+	test('youtube api replaces our container with an iframe', async function(assert) {
 		this.set('youTubeId', 'w311Hd4K_Fk')
 		await render(hbs`{{ember-youtube ytid=youTubeId}}`)
 		assert.ok(this.element.querySelector('.EmberYoutube-player'), 'has container')
 		await waitFor('iframe')
-		assert.equal(this.element.querySelector('.EmberYoutube-player').tagName, 'IFRAME', 'container is replaced')
+		assert.equal(
+			this.element.querySelector('.EmberYoutube-player').tagName,
+			'IFRAME',
+			'container is replaced'
+		)
 	})
 
-	test('it can show and remove controls', async function (assert) {
+	test('it can show and remove controls', async function(assert) {
 		assert.expect(3)
 		this.set('controls', true)
 		await render(hbs`{{ember-youtube showControls=controls}}`)
 		assert.ok(this.element.querySelector('.EmberYoutube-controls button'))
-		assert.equal(this.element.querySelectorAll('.EmberYoutube-controls button')[0].textContent, 'Play')
+		assert.equal(
+			this.element.querySelectorAll('.EmberYoutube-controls button')[0].textContent,
+			'Play'
+		)
 		this.set('controls', false)
 		assert.notOk(this.element.querySelector('.EmberYoutube-controls button'))
 	})
 
-	test('it can show and hide progress', async function (assert) {
+	test('it can show and hide progress', async function(assert) {
 		assert.expect(2)
 		this.set('progress', false)
 		await render(hbs`{{ember-youtube showProgress=progress}}`)
-		assert.notOk(this.element.querySelector('.EmberYoutube-progress'), 'Progress is hidden by default')
+		assert.notOk(
+			this.element.querySelector('.EmberYoutube-progress'),
+			'Progress is hidden by default'
+		)
 		this.set('progress', true)
 		assert.ok(this.element.querySelector('.EmberYoutube-progress'), 'Progress can be shown')
 	})

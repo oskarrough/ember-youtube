@@ -1,5 +1,5 @@
-import Controller from '@ember/controller';
-import {debug} from '@ember/debug';
+import Controller from '@ember/controller'
+import { debug } from '@ember/debug'
 
 export default Controller.extend({
 	youTubeId: 'fZ7MhTRmJ60',
@@ -18,17 +18,17 @@ export default Controller.extend({
 
 	actions: {
 		ytPlaying() {
-			debug('on playing from controller');
+			debug('on playing from controller')
 		},
 		ytPaused() {
-			debug('on paused from controller');
+			debug('on paused from controller')
 		},
 		ytEnded() {
-			debug('on ended from controller');
+			debug('on ended from controller')
 			// here you could load another video by changing the youTubeId
 		},
 		ytBuffering() {
-			debug('on buffering from controller');
+			debug('on buffering from controller')
 		}
 	}
-});
+})
