@@ -1,6 +1,5 @@
 /* global YT, window */
 
-import $ from 'jquery';
 import Component from '@ember/component';
 import RSVP from 'rsvp'
 import { computed, getProperties, setProperties, observer } from '@ember/object';
@@ -65,7 +64,7 @@ export default Component.extend({
 	didInsertElement() {
 		this._super(...arguments);
 
-		this.progressBarClick();
+		this.addProgressBarClickHandler();
 
 		if (!this.get('lazyload') && this.get('ytid')) {
 			// If "lazyload" is not enabled and we have an ID, we can start immediately.
@@ -79,6 +78,9 @@ export default Component.extend({
 
 		// clear the timer
 		this.stopTimer();
+
+		// remove progress bar click handler
+		this.removeProgressBarClickHandler();
 
 		// destroy video player
 		const player = this.get('player');
@@ -137,7 +139,9 @@ export default Component.extend({
 				// If already loaded, make sure not to load the script again.
 				resolve(window.YT);
 			} else {
-				$.getScript('https://www.youtube.com/iframe_api');
+				let ytScript = document.createElement("script");
+				ytScript.src = "https://www.youtube.com/iframe_api";
+				document.head.appendChild(ytScript);
 			}
 		});
 	},
@@ -325,17 +329,31 @@ export default Component.extend({
 
 	// OK, this is stupid but couldn't access the "event" inside
 	// an ember action so here's a manual click handler instead.
-	progressBarClick() {
+	addProgressBarClickHandler() {
+		this.element.addEventListener(
+			"click",
+			this.progressBarClick.bind(this),
+			false
+		);
+	},
+	progressBarClick(event) {
 		let self = this;
-		this.$().on('click', 'progress', function (event) {
-			// get the x position of the click inside our progress el
-			let x = event.pageX - $(this).position().left;
-			// convert it to a value relative to the duration (max)
-			let clickedValue = x * this.max / this.offsetWidth;
-			// 250 = 0.25 seconds into player
-			self.set("currentTime", clickedValue);
-			self.send('seekTo', clickedValue);
-		});
+		let element = event.srcElement;
+		if (element.tagName.toLowerCase() !== "progress") return;
+		// get the x position of the click inside our progress el
+		let x = event.pageX - element.getBoundingClientRect().x;	
+		// convert it to a value relative to the duration (max)
+		let clickedValue = (x * element.max) / element.offsetWidth;
+		// 250 = 0.25 seconds into player
+		self.set("currentTime", clickedValue);
+		self.send("seekTo", clickedValue);
+	},
+	removeProgressBarClickHandler() {
+		this.element.removeEventListener(
+			"click",
+			this.progressBarClick.bind(this),
+			false
+		);
 	},
 
 	actions: {
