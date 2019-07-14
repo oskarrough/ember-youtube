@@ -28,33 +28,33 @@ export default Component.extend({
 	playerState: 'loading',
 
 	/* Hooks */
-	playerCreated(player) {
+	playerCreated() {
 		/* Callback to be passed. */
 	},
-	playerStateChanged(event) {
+	playerStateChanged() {
 		/* Callback to be passed. */
 	},
-	error(errorCode) {
+	error() {
 		/* Callback to be passed. */
 	},
 
 	/* State hooks */
-	ready(event) {
+	ready() {
 		/* Callback to be passed. */
 	},
-	ended(event) {
+	ended() {
 		/* Callback to be passed. */
 	},
-	playing(event) {
+	playing() {
 		/* Callback to be passed. */
 	},
-	paused(event) {
+	paused() {
 		/* Callback to be passed. */
 	},
-	buffering(event) {
+	buffering() {
 		/* Callback to be passed. */
 	},
-	queued(event) {
+	queued() {
 		/* Callback to be passed. */
 	},
 
