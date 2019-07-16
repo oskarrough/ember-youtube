@@ -27,6 +27,37 @@ export default Component.extend({
 	player: null,
 	playerState: 'loading',
 
+	/* Hooks */
+	playerCreated() {
+		/* Callback to be passed. */
+	},
+	playerStateChanged() {
+		/* Callback to be passed. */
+	},
+	error() {
+		/* Callback to be passed. */
+	},
+
+	/* State hooks */
+	ready() {
+		/* Callback to be passed. */
+	},
+	ended() {
+		/* Callback to be passed. */
+	},
+	playing() {
+		/* Callback to be passed. */
+	},
+	paused() {
+		/* Callback to be passed. */
+	},
+	buffering() {
+		/* Callback to be passed. */
+	},
+	queued() {
+		/* Callback to be passed. */
+	},
+
 	init() {
 		this._super();
 
@@ -107,7 +138,7 @@ export default Component.extend({
 				playerState: 'ready'
 			});
 
-			this.sendAction('playerCreated', player);
+			this.playerCreated(player);
 
 			this.loadVideo();
 		} catch(err) {
@@ -181,8 +212,8 @@ export default Component.extend({
 			debug(state);
 		}
 		// send actions outside
-		this.sendAction(state, event);
-		this.sendAction('playerStateChanged', event);
+		this[state](event);
+		this.playerStateChanged(event);
 		// send actions inside
 		this.send(state);
 	},
@@ -192,7 +223,7 @@ export default Component.extend({
 		let errorCode = event.data;
 		this.set('playerState', 'error');
 		// Send the event to the controller
-		this.sendAction('error', errorCode);
+		this.error(errorCode);
 		if (this.get('showDebug')) {
 			debug('error' + errorCode);
 		}

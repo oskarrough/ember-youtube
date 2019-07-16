@@ -32,9 +32,10 @@
 		delegate=this
 		delegate-as="emberYoutube"
 
-		playing="ytPlaying"
-		paused="ytPaused"
-		ended="ytEnded"}}
+		playing=(action "ytPlaying")
+		paused=(action "ytPaused")
+		ended=(action "ytEnded")
+	}}
 </section>
 
 <p>Multiple players on the same route are supported as well.</p>
