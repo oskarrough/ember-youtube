@@ -44,10 +44,11 @@ Here's another example with all options. Only `ytid` is required.
 	lazyload=false
 	delegate=this
 	delegate-as="emberYoutube"
-	playing="ytPlaying"
-	paused="ytPaused"
-	ended="ytEnded"
-	buffering="ytBuffering"}}
+	playing=(action "ytPlaying")
+	paused=(action "ytPaused")
+	ended=(action "ytEnded")
+	buffering=(action "ytBuffering")
+}}
 ```
 
 ## YouTube player options
