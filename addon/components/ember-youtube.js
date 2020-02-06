@@ -5,6 +5,7 @@ import RSVP from 'rsvp'
 import { computed, getProperties, setProperties, observer } from '@ember/object';
 import { debug } from '@ember/debug';
 import { run } from '@ember/runloop';
+import { assign } from '@ember/polyfills';
 import { task } from 'ember-concurrency';
 
 export default Component.extend({
@@ -65,7 +66,7 @@ export default Component.extend({
 			// YouTube's embedded player can take a number of optional parameters.
 			// https://developers.google.com/youtube/player_parameters#Parameters
 			// https://developers.google.com/youtube/youtube_player_demo
-			playerVars: Object.assign({}, this.playerVars),
+			playerVars: assign({}, this.playerVars),
 			// from YT.PlayerState
 			stateNames: {
 				'-1': 'ready',		// READY
